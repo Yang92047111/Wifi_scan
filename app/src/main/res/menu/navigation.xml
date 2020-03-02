@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_wifi"
+        android:icon="@drawable/ic_wifi_action"
+        android:title="@string/wifi" />
+
+    <item
+        android:id="@+id/navigation_label"
+        android:icon="@drawable/ic_label"
+        android:title="@string/label" />
+
+    <item
+        android:id="@+id/navigation_position"
+        android:icon="@drawable/ic_position"
+        android:title="@string/position" />
+
+    <item
+        android:id="@+id/navigation_setting"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/setting" />
+
+</menu>
