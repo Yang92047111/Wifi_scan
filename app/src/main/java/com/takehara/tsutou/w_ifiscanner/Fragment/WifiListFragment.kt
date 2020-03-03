@@ -30,7 +30,7 @@ open class WifiListFragment() : ListFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        emptyView = progress
+        emptyView = wifi_scan_view
         listAdapter = activity?.let { WifiListAdapter(it) }
         listView.emptyView = emptyView
     }
@@ -60,7 +60,7 @@ open class WifiListFragment() : ListFragment() {
         if (listAdapter is WifiListAdapter) {
             listAdapter.clear()
             if (stations != null) {
-                emptyView?.visibility = if (stations.size > 0) View.VISIBLE else View.GONE
+                emptyView?.visibility = if (stations.isNotEmpty()) View.VISIBLE else View.GONE
                 listAdapter.addAll(WifiStation.newList(stations))
             }
             listAdapter.notifyDataSetChanged()

@@ -12,17 +12,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/imageButton"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:srcCompat="@drawable/header" />-->
-
-        <ProgressBar
-            android:id="@+id/progress"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/wifi_scan_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            app:lottie_fileName="Wifi-cat.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true" />
 
         <ListView
             android:id="@android:id/list"
@@ -32,13 +28,5 @@
         </ListView>
 
     </FrameLayout>
-
-<!--    <Button-->
-<!--        android:id="@+id/btn_scan_wifi"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-<!--        android:text="@string/action_scan_wifi"-->
-<!--        tools:ignore="MissingConstraints" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
