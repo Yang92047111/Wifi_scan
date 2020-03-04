@@ -1,60 +1,44 @@
 package com.takehara.tsutou.w_ifiscanner.Fragment
 
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
+import androidx.fragment.app.Fragment
 import com.takehara.tsutou.w_ifiscanner.R
+import kotlinx.android.synthetic.main.fragment_label_component.view.*
+import org.angmarch.views.NiceSpinner
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LabelComponent.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LabelComponent : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_label_component, container, false)
+        val view = inflater.inflate(R.layout.fragment_label_component, container, false)
+
+        // Building spinner
+        val building_types = mutableListOf<String>("綜合科館", "共同科館")
+        val building_spinner = view.building_spinner as NiceSpinner
+        building_spinner.setTextColor(Color.BLACK)
+        building_spinner.attachDataSource(building_types)
+
+        // Floor spinner
+        val floor_types = mutableListOf<String>(" 1F", " 2F")
+        val floor_spinner = view.floor_spinner as NiceSpinner
+        floor_spinner.setTextColor(Color.BLACK)
+        floor_spinner.attachDataSource(floor_types)
+
+        // Classroom spinner
+        val classroom_types = mutableListOf<String>("107-1", "109-1")
+        val classroom_spinner = view.classroom_spinner as NiceSpinner
+        classroom_spinner.setTextColor(Color.BLACK)
+        classroom_spinner.attachDataSource(classroom_types)
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LabelComponent.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LabelComponent().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

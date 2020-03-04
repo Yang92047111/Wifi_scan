@@ -27,11 +27,14 @@
                 android:textSize="21sp"
                 android:textColor="@color/colorLabel"/>
 
-            <Spinner
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/building_spinner"
                 android:layout_width="300dp"
                 android:layout_height="54.38dp"
                 android:layout_gravity="center"
-                android:background="@drawable/spinner_arrow"/>
+                tools:layout_editor_absoluteX="162dp"
+                tools:layout_editor_absoluteY="231dp"
+                tools:ignore="MissingConstraints" />
 
         </LinearLayout>
 
@@ -49,11 +52,14 @@
                 android:textSize="21sp"
                 android:textColor="@color/colorLabel"/>
 
-            <Spinner
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/floor_spinner"
                 android:layout_width="300dp"
                 android:layout_height="54.38dp"
                 android:layout_gravity="center"
-                android:background="@drawable/spinner_arrow"/>
+                tools:layout_editor_absoluteX="162dp"
+                tools:layout_editor_absoluteY="231dp"
+                tools:ignore="MissingConstraints"/>
 
         </LinearLayout>
 
@@ -71,11 +77,14 @@
                 android:textSize="21sp"
                 android:textColor="@color/colorLabel"/>
 
-            <Spinner
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/classroom_spinner"
                 android:layout_width="300dp"
                 android:layout_height="54.38dp"
                 android:layout_gravity="center"
-                android:background="@drawable/spinner_arrow"/>
+                tools:layout_editor_absoluteX="162dp"
+                tools:layout_editor_absoluteY="231dp"
+                tools:ignore="MissingConstraints"/>
 
         </LinearLayout>
 
