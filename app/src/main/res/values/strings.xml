@@ -23,7 +23,8 @@
     <string name="station_frequency">%1$s MHz</string>
     <string name="station_level">%1$s dBm</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="building">大樓：</string>
+    <string name="floor">樓層：</string>
+    <string name="classroom">教室：</string>
 
 </resources>
