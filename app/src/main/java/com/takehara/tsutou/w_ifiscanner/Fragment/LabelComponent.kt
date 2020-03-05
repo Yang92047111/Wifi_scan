@@ -1,14 +1,24 @@
 package com.takehara.tsutou.w_ifiscanner.Fragment
 
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_component.view.*
+import okhttp3.*
 import org.angmarch.views.NiceSpinner
+import java.io.IOException
+import javax.net.ssl.TrustManager
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 
 
 class LabelComponent : Fragment() {
@@ -26,7 +36,7 @@ class LabelComponent : Fragment() {
         building_spinner.attachDataSource(building_types)
 
         // Floor spinner
-        val floor_types = mutableListOf<String>(" 1F", " 2F")
+        val floor_types = mutableListOf<String>("1F", "2F")
         val floor_spinner = view.floor_spinner as NiceSpinner
         floor_spinner.setTextColor(Color.BLACK)
         floor_spinner.attachDataSource(floor_types)
@@ -38,6 +48,72 @@ class LabelComponent : Fragment() {
         classroom_spinner.attachDataSource(classroom_types)
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        var client = OkHttpClient()
+        val okHttpClient = OkHttpClient.Builder()
+
+        // Create a trust manager that does not validate certificate chains
+        val trustAllCerts: Array<TrustManager> = arrayOf(object : X509TrustManager {
+            override fun checkClientTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+            }
+
+            override fun checkServerTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+            }
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
+
+        // Install the all-trusting trust manager
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, SecureRandom())
+
+        // Create an ssl socket factory with our all-trusting manager
+        val sslSocketFactory = sslContext.socketFactory
+        if (trustAllCerts.isNotEmpty() && trustAllCerts.first() is X509TrustManager) {
+            Log.i(TAG, "ssl")
+            okHttpClient.sslSocketFactory(
+                sslSocketFactory,
+                trustAllCerts.first() as X509TrustManager
+            )
+            val allow = HostnameVerifier { _, _ -> true }
+            okHttpClient.hostnameVerifier(allow)
+            Log.i(TAG, "ssl2")
+        }
+
+        client = okHttpClient.build()
+
+        val formBody = FormBody.Builder()
+            .add("pressure", "Hi")
+            .build()
+        val request = Request.Builder()
+            .url("https://140.124.73.63:3003/api/user/addtest")
+            .post(formBody)
+            .addHeader("Content-Type","application/json")
+            .build()
+
+        view.label_btn.setOnClickListener {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+
+                }
+
+                @Throws(IOException::class)
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("STATUS", "200")
+                    println(response.body!!.string())
+                }
+            })
+        }
     }
 
 }

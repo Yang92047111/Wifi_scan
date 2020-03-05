@@ -1,7 +1,6 @@
 package com.takehara.tsutou.w_ifiscanner.Activity
 
 import android.Manifest
-import androidx.fragment.app.Fragment
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,10 +9,11 @@ import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.takehara.tsutou.w_ifiscanner.Fragment.WifiDetailFragment
 import com.takehara.tsutou.w_ifiscanner.Fragment.WifiListFragment
 import com.takehara.tsutou.w_ifiscanner.Model.WifiStation
