@@ -27,4 +27,7 @@
     <string name="floor">樓層：</string>
     <string name="classroom">教室：</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

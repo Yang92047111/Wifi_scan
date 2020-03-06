@@ -1,6 +1,7 @@
 package com.takehara.tsutou.w_ifiscanner.Fragment
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -13,12 +14,12 @@ import kotlinx.android.synthetic.main.fragment_label_component.view.*
 import okhttp3.*
 import org.angmarch.views.NiceSpinner
 import java.io.IOException
-import javax.net.ssl.TrustManager
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLContext
-import javax.net.ssl.X509TrustManager
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 
 class LabelComponent : Fragment() {
@@ -51,7 +52,7 @@ class LabelComponent : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+//        super.onViewCreated(view, savedInstanceState)
 
         var client = OkHttpClient()
         val okHttpClient = OkHttpClient.Builder()
@@ -102,6 +103,9 @@ class LabelComponent : Fragment() {
             .build()
 
         view.label_btn.setOnClickListener {
+
+            val intent = Intent(activity, LabelActivity::class.java)
+
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
 
@@ -109,10 +113,11 @@ class LabelComponent : Fragment() {
 
                 @Throws(IOException::class)
                 override fun onResponse(call: Call, response: Response) {
-                    Log.d("STATUS", "200")
-                    println(response.body!!.string())
+                    Log.d("STATUS", response.body!!.string())
                 }
             })
+
+            startActivity(intent)
         }
     }
 
