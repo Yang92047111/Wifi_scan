@@ -15,11 +15,33 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.takehara.tsutou.w_ifiscanner.Activity.LabelWifiList
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.activity_label.*
 
 open class LabelActivity : AppCompatActivity() {
+
+    private val gson = Gson()
+
+    data class Upload(
+        @SerializedName("test") var test: Boolean,
+        @SerializedName("location") var location: Location,
+        @SerializedName("data") var data: List<Data>
+    )
+
+    data class Location (
+        @SerializedName("building") var building: String,
+        @SerializedName("floor") var floor: String,
+        @SerializedName("name") var classroom: String
+    )
+
+    data class Data (
+        @SerializedName("mac") var mac: String,
+        @SerializedName("rssi") var rssi: String,
+        @SerializedName("ssid") var ssid: String
+    )
 
     companion object {
         private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
@@ -49,9 +71,27 @@ open class LabelActivity : AppCompatActivity() {
         setTitle(R.string.title_wifi)
 
         val intent = getIntent()
-        val Building = intent.getStringExtra("building")
-        val Floor = intent.getStringExtra("floor")
-        val Classroom = intent.getStringExtra("classroom")
+        val building : String? = intent.getStringExtra("building")
+        val floor: String? = intent.getStringExtra("floor")
+        val classroom: String? = intent.getStringExtra("classroom")
+
+        val newLocation = Location(building = building.toString(), floor = floor.toString(), classroom = classroom.toString())
+        var newData: ArrayList<Data> = ArrayList()
+        val AP1 = Data(
+            mac = "3C2D5E326429",
+            rssi = "-20",
+            ssid = "fuck"
+        )
+        val AP2 = Data(
+            mac = "3C2D5E326428",
+            rssi = "-20",
+            ssid = "NTUT"
+        )
+        newData.add(AP1)
+        newData.add(AP2)
+        val data = Upload(test = true, location = newLocation, data = newData)
+        val jsonString = gson.toJson(data)
+        Log.i("json", jsonString)
 
         transitionToList()
 
