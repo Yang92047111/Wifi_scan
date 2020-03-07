@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/WiFi_scan_androidx.iml" filepath="$PROJECT_DIR$/WiFi_scan_androidx.iml" group="WiFi_scan_androidx" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="WiFi_scan_androidx/app" />
-    </modules>
-  </component>
-</project>

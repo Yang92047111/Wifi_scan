@@ -1,5 +1,5 @@
 .idea
 .gradle
 .DS_Store
-/build
+build
 *.iml
