@@ -113,6 +113,7 @@ open class LabelActivity : AppCompatActivity() {
 
         finish.setOnClickListener {
             UploadAPI()
+            finish()
         }
     }
 
