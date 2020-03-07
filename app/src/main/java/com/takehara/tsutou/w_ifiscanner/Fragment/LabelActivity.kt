@@ -28,7 +28,7 @@ open class LabelActivity : AppCompatActivity() {
     data class Upload(
         @SerializedName("test") var test: Boolean,
         @SerializedName("location") var location: Location,
-        @SerializedName("data") var data: List<Data>
+        @SerializedName("data") var data: ArrayList<List<Data>>
     )
 
     data class Location (
@@ -76,7 +76,7 @@ open class LabelActivity : AppCompatActivity() {
         val classroom: String? = intent.getStringExtra("classroom")
 
         val newLocation = Location(building = building.toString(), floor = floor.toString(), classroom = classroom.toString())
-        var newData: ArrayList<Data> = ArrayList()
+        var newData: ArrayList<List<Data>> = ArrayList()
         val AP1 = Data(
             mac = "3C2D5E326429",
             rssi = "-20",
@@ -87,8 +87,8 @@ open class LabelActivity : AppCompatActivity() {
             rssi = "-20",
             ssid = "NTUT"
         )
-        newData.add(AP1)
-        newData.add(AP2)
+        newData.add(listOf(AP1))
+        newData.add(listOf(AP2))
         val data = Upload(test = true, location = newLocation, data = newData)
         val jsonString = gson.toJson(data)
         Log.i("json", jsonString)
