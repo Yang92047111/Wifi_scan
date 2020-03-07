@@ -9,14 +9,15 @@ import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.takehara.tsutou.w_ifiscanner.Activity.LabelWifiList
-import com.takehara.tsutou.w_ifiscanner.Model.WifiStation
 import com.takehara.tsutou.w_ifiscanner.R
+import kotlinx.android.synthetic.main.activity_label.*
 
 open class LabelActivity : AppCompatActivity() {
 
@@ -28,7 +29,6 @@ open class LabelActivity : AppCompatActivity() {
         get() = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     private var listFragment: LabelWifiList? = null
-    private var detailFragment: WifiDetailFragment? = null
 
     private var listFragmentVisible: Boolean = false
     private var wifiReceiverRegistered: Boolean = false
@@ -39,6 +39,7 @@ open class LabelActivity : AppCompatActivity() {
             if (listFragmentVisible && results != null) {
                 listFragment?.updateItems(results)
             }
+            Log.i("wifi", results.toString())
         }
     }
 
@@ -47,12 +48,22 @@ open class LabelActivity : AppCompatActivity() {
         setContentView(R.layout.activity_label)
         setTitle(R.string.title_wifi)
 
+        val intent = getIntent()
+        val Building = intent.getStringExtra("building")
+        val Floor = intent.getStringExtra("floor")
+        val Classroom = intent.getStringExtra("classroom")
+
         transitionToList()
 
         if (!wifiManager.isWifiEnabled) {
             Toast.makeText(this, R.string.prompt_enabling_wifi, Toast.LENGTH_SHORT).show()
             wifiManager.isWifiEnabled()
         }
+
+        label_finish_btn.setOnClickListener {
+            finish()
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -117,11 +128,6 @@ open class LabelActivity : AppCompatActivity() {
     private fun transitionToList() {
         listFragment = LabelWifiList.newInstance()
         transition(requireNotNull(listFragment))
-    }
-
-    fun transitionToDetail(item: WifiStation) {
-        detailFragment = WifiDetailFragment.newInstance(item)
-        transition(requireNotNull(detailFragment), true)
     }
 
     private fun refreshList() {

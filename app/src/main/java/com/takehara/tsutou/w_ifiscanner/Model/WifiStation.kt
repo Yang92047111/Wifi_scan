@@ -2,7 +2,6 @@ package com.takehara.tsutou.w_ifiscanner.Model
 
 import android.net.wifi.ScanResult
 import java.io.Serializable
-import javax.xml.transform.Result
 
 data class WifiStation(
     val ssid: String?,

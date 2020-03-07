@@ -7,13 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ListView
 import androidx.fragment.app.ListFragment
 import com.takehara.tsutou.w_ifiscanner.Fragment.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.Model.WifiStation
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_wifi_list.*
-import kotlinx.android.synthetic.main.fragment_wifi_list.*
 import kotlinx.android.synthetic.main.list_item_wifi.view.*
 
 class LabelWifiList : ListFragment() {
@@ -44,17 +42,6 @@ class LabelWifiList : ListFragment() {
         val activity = this.activity
         if (activity is LabelActivity) {
             activity.onResumeFragment(this)
-        }
-    }
-
-    override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
-        super.onListItemClick(l, v, position, id)
-
-        val activity = this.activity
-
-        if (activity is LabelActivity) {
-            val item = l.getItemAtPosition(position) as WifiStation
-            activity.transitionToDetail(item)
         }
     }
 

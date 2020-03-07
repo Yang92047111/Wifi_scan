@@ -8,8 +8,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import com.takehara.tsutou.w_ifiscanner.R
+import kotlinx.android.synthetic.main.fragment_label_component.*
 import kotlinx.android.synthetic.main.fragment_label_component.view.*
 import okhttp3.*
 import org.angmarch.views.NiceSpinner
@@ -20,6 +23,7 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import kotlin.math.floor
 
 
 class LabelComponent : Fragment() {
@@ -97,7 +101,7 @@ class LabelComponent : Fragment() {
             .add("pressure", "Hi")
             .build()
         val request = Request.Builder()
-            .url("https://140.124.73.63:3003/api/user/addtest")
+            .url("https://virtserver.swaggerhub.com/chougitom/podm/1.0.0/upload")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -105,6 +109,10 @@ class LabelComponent : Fragment() {
         view.label_btn.setOnClickListener {
 
             val intent = Intent(activity, LabelActivity::class.java)
+
+            intent.putExtra("building", building_spinner.text.toString())
+            intent.putExtra("floor", floor_spinner.text.toString())
+            intent.putExtra("classroom", classroom_spinner.text.toString())
 
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
