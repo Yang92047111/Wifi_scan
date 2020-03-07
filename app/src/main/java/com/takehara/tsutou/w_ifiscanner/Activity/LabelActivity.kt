@@ -105,14 +105,19 @@ open class LabelActivity : AppCompatActivity() {
             wifiManager.isWifiEnabled()
         }
 
-        label_finish_btn.setOnClickListener {
-            UploadAPI()
-            finish()
+        restart.setOnClickListener(){
+            refreshList()
+            restart.visibility = View.GONE
+            finish.visibility = View.GONE
         }
 
+        finish.setOnClickListener {
+            UploadAPI()
+        }
     }
 
     private fun UploadAPI() {
+
         val intent = getIntent()
         val building : String? = intent.getStringExtra("building")
         val floor: String? = intent.getStringExtra("floor")
@@ -171,23 +176,13 @@ open class LabelActivity : AppCompatActivity() {
             val allow = HostnameVerifier { _, _ -> true }
             okHttpClient.hostnameVerifier(allow)
             Log.i(ContentValues.TAG, "ssl2")
-
-        restart.setOnClickListener(){
-            refreshList()
-            restart.visibility = View.GONE
-            finish.visibility = View.GONE
         }
-        finish.setOnClickListener {
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
 
-                }
-
-        client = okHttpClient.build()
+//        client = okHttpClient.build()
 
         val formBody = json.toRequestBody()
         val request = Request.Builder()
-            .url("https://virtserver.swaggerhub.com/chougitom/podm/1.0.0/upload")
+            .url("https://140.124.73.63:3003/api/user/addtest")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -223,9 +218,7 @@ open class LabelActivity : AppCompatActivity() {
         super.onStart()
         startScanning()
     }
-    fun api(){
 
-    }
     fun onResumeFragment(fragment: Fragment) {
         listFragmentVisible = false
 
