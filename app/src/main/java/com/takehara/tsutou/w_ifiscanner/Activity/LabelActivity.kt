@@ -5,11 +5,14 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -20,6 +23,8 @@ import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.activity_label.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlinx.android.synthetic.main.fragment_label_component.*
+import kotlinx.android.synthetic.main.fragment_label_component.view.*
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -69,6 +74,8 @@ open class LabelActivity : AppCompatActivity() {
             val results = wifiManager.scanResults as ArrayList<ScanResult>
             if (listFragmentVisible && results != null) {
                 listFragment?.updateItems(results)
+                restart.visibility = View.VISIBLE
+                finish.visibility = View.VISIBLE
             }
         }
     }
@@ -164,7 +171,17 @@ open class LabelActivity : AppCompatActivity() {
             val allow = HostnameVerifier { _, _ -> true }
             okHttpClient.hostnameVerifier(allow)
             Log.i(ContentValues.TAG, "ssl2")
+
+        restart.setOnClickListener(){
+            refreshList()
+            restart.visibility = View.GONE
+            finish.visibility = View.GONE
         }
+        finish.setOnClickListener {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+
+                }
 
         client = okHttpClient.build()
 
@@ -206,13 +223,14 @@ open class LabelActivity : AppCompatActivity() {
         super.onStart()
         startScanning()
     }
+    fun api(){
 
+    }
     fun onResumeFragment(fragment: Fragment) {
         listFragmentVisible = false
 
         if (fragment == listFragment) {
             listFragmentVisible = true
-
             refreshList()
         }
     }
@@ -250,6 +268,7 @@ open class LabelActivity : AppCompatActivity() {
         listFragment =
             LabelWifiList.newInstance()
         transition(requireNotNull(listFragment))
+
     }
 
     private fun refreshList() {

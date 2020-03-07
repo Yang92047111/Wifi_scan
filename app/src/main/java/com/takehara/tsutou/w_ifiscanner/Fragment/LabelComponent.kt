@@ -13,15 +13,8 @@ import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_component.*
 import kotlinx.android.synthetic.main.fragment_label_component.view.*
-import okhttp3.*
 import org.angmarch.views.NiceSpinner
-import java.io.IOException
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
+
 
 
 class LabelComponent : Fragment() {
@@ -56,51 +49,7 @@ class LabelComponent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var client = OkHttpClient()
-        val okHttpClient = OkHttpClient.Builder()
 
-        // Create a trust manager that does not validate certificate chains
-        val trustAllCerts: Array<TrustManager> = arrayOf(object : X509TrustManager {
-            override fun checkClientTrusted(
-                chain: Array<out X509Certificate>?,
-                authType: String?
-            ) {
-            }
-
-            override fun checkServerTrusted(
-                chain: Array<out X509Certificate>?,
-                authType: String?
-            ) {
-            }
-
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        })
-
-        // Install the all-trusting trust manager
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, trustAllCerts, SecureRandom())
-
-        // Create an ssl socket factory with our all-trusting manager
-        val sslSocketFactory = sslContext.socketFactory
-        if (trustAllCerts.isNotEmpty() && trustAllCerts.first() is X509TrustManager) {
-            okHttpClient.sslSocketFactory(
-                sslSocketFactory,
-                trustAllCerts.first() as X509TrustManager
-            )
-            val allow = HostnameVerifier { _, _ -> true }
-            okHttpClient.hostnameVerifier(allow)
-        }
-
-        client = okHttpClient.build()
-
-        val formBody = FormBody.Builder()
-            .add("pressure", "Hi")
-            .build()
-        val request = Request.Builder()
-            .url("https://virtserver.swaggerhub.com/chougitom/podm/1.0.0/upload")
-            .post(formBody)
-            .addHeader("Content-Type","application/json")
-            .build()
 
         view.label_btn.setOnClickListener {
 
@@ -109,19 +58,9 @@ class LabelComponent : Fragment() {
             intent.putExtra("building", building_spinner.text.toString())
             intent.putExtra("floor", floor_spinner.text.toString())
             intent.putExtra("classroom", classroom_spinner.text.toString())
-
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-
-                }
-
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                }
-            })
-
             startActivity(intent)
         }
+
     }
 
 }

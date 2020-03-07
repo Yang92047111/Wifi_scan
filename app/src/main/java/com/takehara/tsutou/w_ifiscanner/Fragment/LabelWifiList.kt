@@ -12,6 +12,7 @@ import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.Model.WifiStation
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_wifi_list.*
+import kotlinx.android.synthetic.main.fragment_label_wifi_list.view.*
 import kotlinx.android.synthetic.main.list_item_wifi.view.*
 
 class LabelWifiList : ListFragment() {
@@ -53,6 +54,7 @@ class LabelWifiList : ListFragment() {
             listAdapter.clear()
             if (stations != null) {
                 emptyView?.visibility = if (stations.isNotEmpty()) View.VISIBLE else View.GONE
+
                 listAdapter.addAll(WifiStation.newList(stations))
             }
             listAdapter.notifyDataSetChanged()
