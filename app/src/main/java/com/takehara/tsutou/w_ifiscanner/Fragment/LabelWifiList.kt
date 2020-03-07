@@ -1,4 +1,4 @@
-package com.takehara.tsutou.w_ifiscanner.Activity
+package com.takehara.tsutou.w_ifiscanner.Fragment
 
 import android.content.Context
 import android.net.wifi.ScanResult
@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.ListFragment
-import com.takehara.tsutou.w_ifiscanner.Fragment.LabelActivity
+import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.Model.WifiStation
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_wifi_list.*
@@ -32,7 +32,9 @@ class LabelWifiList : ListFragment() {
 
         emptyView = label_wifi_scan_view
         listAdapter = activity?.let {
-            WifiListAdapter(it)
+            WifiListAdapter(
+                it
+            )
         }
         listView.emptyView = emptyView
     }

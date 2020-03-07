@@ -1,4 +1,4 @@
-package com.takehara.tsutou.w_ifiscanner.Fragment
+package com.takehara.tsutou.w_ifiscanner.Activity
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.takehara.tsutou.w_ifiscanner.Activity.LabelWifiList
+import com.takehara.tsutou.w_ifiscanner.Fragment.LabelWifiList
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.activity_label.*
 
@@ -75,7 +75,12 @@ open class LabelActivity : AppCompatActivity() {
         val floor: String? = intent.getStringExtra("floor")
         val classroom: String? = intent.getStringExtra("classroom")
 
-        val newLocation = Location(building = building.toString(), floor = floor.toString(), classroom = classroom.toString())
+        val newLocation =
+            Location(
+                building = building.toString(),
+                floor = floor.toString(),
+                classroom = classroom.toString()
+            )
         var newData: ArrayList<List<Data>> = ArrayList()
         val AP1 = Data(
             mac = "3C2D5E326429",
@@ -89,7 +94,12 @@ open class LabelActivity : AppCompatActivity() {
         )
         newData.add(listOf(AP1))
         newData.add(listOf(AP2))
-        val data = Upload(test = true, location = newLocation, data = newData)
+        val data =
+            Upload(
+                test = true,
+                location = newLocation,
+                data = newData
+            )
         val jsonString = gson.toJson(data)
         Log.i("json", jsonString)
 
@@ -166,7 +176,8 @@ open class LabelActivity : AppCompatActivity() {
     }
 
     private fun transitionToList() {
-        listFragment = LabelWifiList.newInstance()
+        listFragment =
+            LabelWifiList.newInstance()
         transition(requireNotNull(listFragment))
     }
 

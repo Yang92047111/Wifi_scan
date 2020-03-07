@@ -8,9 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
+import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_component.*
 import kotlinx.android.synthetic.main.fragment_label_component.view.*
@@ -23,7 +22,6 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
-import kotlin.math.floor
 
 
 class LabelComponent : Fragment() {
