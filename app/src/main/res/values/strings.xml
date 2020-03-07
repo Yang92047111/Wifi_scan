@@ -26,9 +26,9 @@
     <string name="building">大樓：</string>
     <string name="floor">樓層：</string>
     <string name="classroom">教室：</string>
-
+    <string name="restart">重新標記</string>
     <string name="start">開始標記</string>
-    <string name="finish">完成標記</string>
+    <string name="finish">確認標記</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

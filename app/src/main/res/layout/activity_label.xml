@@ -19,16 +19,28 @@
             tools:layout_editor_absoluteY="1dp" />
 
         <Button
-            android:id="@+id/label_finish_btn"
+            android:id="@+id/restart"
             android:layout_width="300dp"
             android:layout_height="54.38dp"
             android:layout_gravity="center"
             android:layout_marginTop="35dp"
-            android:layout_marginBottom="35dp"
-            android:text="@string/finish"
-            android:textSize="21sp"
+            android:background="@drawable/label_btn"
+            android:text="@string/restart"
             android:textColor="@color/colorLabel"
-            android:background="@drawable/label_btn"/>
+            android:textSize="21sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/finish"
+            android:layout_width="300dp"
+            android:layout_height="54.38dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/label_btn"
+            android:text="@string/finish"
+            android:textColor="@color/colorLabel"
+            android:textSize="21sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

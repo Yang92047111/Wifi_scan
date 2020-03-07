@@ -1,17 +1,17 @@
 package com.takehara.tsutou.w_ifiscanner.Activity
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -20,6 +20,16 @@ import com.google.gson.annotations.SerializedName
 import com.takehara.tsutou.w_ifiscanner.Fragment.LabelWifiList
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.activity_label.*
+import kotlinx.android.synthetic.main.fragment_label_component.*
+import kotlinx.android.synthetic.main.fragment_label_component.view.*
+import okhttp3.*
+import java.io.IOException
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 open class LabelActivity : AppCompatActivity() {
 
@@ -60,7 +70,10 @@ open class LabelActivity : AppCompatActivity() {
             val results = wifiManager.scanResults
             if (listFragmentVisible && results != null) {
                 listFragment?.updateItems(results)
+                restart.visibility = View.VISIBLE
+                finish.visibility = View.VISIBLE
             }
+
             Log.i("wifi", results.toString())
         }
     }
@@ -69,6 +82,54 @@ open class LabelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_label)
         setTitle(R.string.title_wifi)
+
+        var client = OkHttpClient()
+        val okHttpClient = OkHttpClient.Builder()
+
+        // Create a trust manager that does not validate certificate chains
+        val trustAllCerts: Array<TrustManager> = arrayOf(object : X509TrustManager {
+            override fun checkClientTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+            }
+
+            override fun checkServerTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+            }
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
+
+        // Install the all-trusting trust manager
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, SecureRandom())
+
+        // Create an ssl socket factory with our all-trusting manager
+        val sslSocketFactory = sslContext.socketFactory
+        if (trustAllCerts.isNotEmpty() && trustAllCerts.first() is X509TrustManager) {
+            Log.i(ContentValues.TAG, "ssl")
+            okHttpClient.sslSocketFactory(
+                sslSocketFactory,
+                trustAllCerts.first() as X509TrustManager
+            )
+            val allow = HostnameVerifier { _, _ -> true }
+            okHttpClient.hostnameVerifier(allow)
+            Log.i(ContentValues.TAG, "ssl2")
+        }
+
+        client = okHttpClient.build()
+
+        val formBody = FormBody.Builder()
+            .add("pressure", "Hi")
+            .build()
+        val request = Request.Builder()
+            .url("https://140.124.73.63:3003/api/user/addtest")
+            .post(formBody)
+            .addHeader("Content-Type","application/json")
+            .build()
 
         val intent = getIntent()
         val building : String? = intent.getStringExtra("building")
@@ -109,11 +170,24 @@ open class LabelActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.prompt_enabling_wifi, Toast.LENGTH_SHORT).show()
             wifiManager.isWifiEnabled()
         }
-
-        label_finish_btn.setOnClickListener {
-            finish()
+        restart.setOnClickListener(){
+            refreshList()
+            restart.visibility = View.GONE
+            finish.visibility = View.GONE
         }
+        finish.setOnClickListener {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
 
+                }
+
+                @Throws(IOException::class)
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("STATUS", response.body!!.string())
+                }
+            })
+
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -135,13 +209,14 @@ open class LabelActivity : AppCompatActivity() {
         super.onStart()
         startScanning()
     }
+    fun api(){
 
+    }
     fun onResumeFragment(fragment: Fragment) {
         listFragmentVisible = false
 
         if (fragment == listFragment) {
             listFragmentVisible = true
-
             refreshList()
         }
     }
@@ -179,6 +254,7 @@ open class LabelActivity : AppCompatActivity() {
         listFragment =
             LabelWifiList.newInstance()
         transition(requireNotNull(listFragment))
+
     }
 
     private fun refreshList() {
