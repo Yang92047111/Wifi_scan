@@ -54,7 +54,7 @@ class LabelComponent : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
 
         var client = OkHttpClient()
         val okHttpClient = OkHttpClient.Builder()

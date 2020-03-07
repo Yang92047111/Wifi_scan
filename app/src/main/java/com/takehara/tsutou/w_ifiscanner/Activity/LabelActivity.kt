@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
@@ -43,6 +44,8 @@ open class LabelActivity : AppCompatActivity() {
         @SerializedName("ssid") var ssid: String
     )
 
+    private var jsonString: ArrayList<List<Data>>? = ArrayList()
+
     companion object {
         private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
     }
@@ -57,18 +60,31 @@ open class LabelActivity : AppCompatActivity() {
 
     private val wifiReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val results = wifiManager.scanResults
+            val results = wifiManager.scanResults as ArrayList<ScanResult>
             if (listFragmentVisible && results != null) {
                 listFragment?.updateItems(results)
             }
-            Log.i("wifi", results.toString())
         }
+    }
+
+    private fun wifiList() {
+        val APdata = ArrayList<Data>()
+        val results = wifiManager.scanResults as ArrayList<ScanResult>
+        for (result in results) {
+            val mac = result.BSSID.replace(":", "")
+            val newData = Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+            APdata.add(newData)
+        }
+        jsonString = arrayListOf(APdata)
+        Log.i("result", jsonString.toString())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_label)
         setTitle(R.string.title_wifi)
+
+        wifiList()
 
         val intent = getIntent()
         val building : String? = intent.getStringExtra("building")
@@ -81,27 +97,17 @@ open class LabelActivity : AppCompatActivity() {
                 floor = floor.toString(),
                 classroom = classroom.toString()
             )
-        var newData: ArrayList<List<Data>> = ArrayList()
-        val AP1 = Data(
-            mac = "3C2D5E326429",
-            rssi = "-20",
-            ssid = "fuck"
-        )
-        val AP2 = Data(
-            mac = "3C2D5E326428",
-            rssi = "-20",
-            ssid = "NTUT"
-        )
-        newData.add(listOf(AP1))
-        newData.add(listOf(AP2))
+
         val data =
-            Upload(
-                test = true,
-                location = newLocation,
-                data = newData
-            )
-        val jsonString = gson.toJson(data)
-        Log.i("json", jsonString)
+            jsonString?.let {
+                Upload(
+                    test = true,
+                    location = newLocation,
+                    data = it
+                )
+            }
+        val json = gson.toJson(data)
+        Log.i("json", json)
 
         transitionToList()
 
