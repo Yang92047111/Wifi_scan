@@ -32,13 +32,13 @@ class LabelComponent : Fragment() {
         building_spinner.attachDataSource(building_types)
 
         // Floor spinner
-        val floor_types = mutableListOf<String>("1F", "2F")
+        val floor_types = mutableListOf<String>("1F", "2F", "3F")
         val floor_spinner = view.floor_spinner as NiceSpinner
         floor_spinner.setTextColor(Color.BLACK)
         floor_spinner.attachDataSource(floor_types)
 
         // Classroom spinner
-        val classroom_types = mutableListOf<String>("107-1", "109-1")
+        val classroom_types = mutableListOf<String>("107-1", "109-1", "108-1", "108-2")
         val classroom_spinner = view.classroom_spinner as NiceSpinner
         classroom_spinner.setTextColor(Color.BLACK)
         classroom_spinner.attachDataSource(classroom_types)

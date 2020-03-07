@@ -5,10 +5,8 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -23,8 +21,6 @@ import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.activity_label.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
-import kotlinx.android.synthetic.main.fragment_label_component.*
-import kotlinx.android.synthetic.main.fragment_label_component.view.*
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -179,7 +175,7 @@ open class LabelActivity : AppCompatActivity() {
             Log.i(ContentValues.TAG, "ssl2")
         }
 
-//        client = okHttpClient.build()
+        client = okHttpClient.build()
 
         val formBody = json.toRequestBody()
         val request = Request.Builder()
