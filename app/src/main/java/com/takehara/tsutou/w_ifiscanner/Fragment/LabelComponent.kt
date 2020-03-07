@@ -83,14 +83,12 @@ class LabelComponent : Fragment() {
         // Create an ssl socket factory with our all-trusting manager
         val sslSocketFactory = sslContext.socketFactory
         if (trustAllCerts.isNotEmpty() && trustAllCerts.first() is X509TrustManager) {
-            Log.i(TAG, "ssl")
             okHttpClient.sslSocketFactory(
                 sslSocketFactory,
                 trustAllCerts.first() as X509TrustManager
             )
             val allow = HostnameVerifier { _, _ -> true }
             okHttpClient.hostnameVerifier(allow)
-            Log.i(TAG, "ssl2")
         }
 
         client = okHttpClient.build()
@@ -119,7 +117,6 @@ class LabelComponent : Fragment() {
 
                 @Throws(IOException::class)
                 override fun onResponse(call: Call, response: Response) {
-                    Log.d("STATUS", response.body!!.string())
                 }
             })
 

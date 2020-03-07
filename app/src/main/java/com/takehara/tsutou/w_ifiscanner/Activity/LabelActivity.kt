@@ -1,10 +1,7 @@
 package com.takehara.tsutou.w_ifiscanner.Activity
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
@@ -21,6 +18,15 @@ import com.google.gson.annotations.SerializedName
 import com.takehara.tsutou.w_ifiscanner.Fragment.LabelWifiList
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.activity_label.*
+import okhttp3.*
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 open class LabelActivity : AppCompatActivity() {
 
@@ -76,7 +82,6 @@ open class LabelActivity : AppCompatActivity() {
             APdata.add(newData)
         }
         jsonString = arrayListOf(APdata)
-        Log.i("result", jsonString.toString())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +91,21 @@ open class LabelActivity : AppCompatActivity() {
 
         wifiList()
 
+        transitionToList()
+
+        if (!wifiManager.isWifiEnabled) {
+            Toast.makeText(this, R.string.prompt_enabling_wifi, Toast.LENGTH_SHORT).show()
+            wifiManager.isWifiEnabled()
+        }
+
+        label_finish_btn.setOnClickListener {
+            UploadAPI()
+            finish()
+        }
+
+    }
+
+    private fun UploadAPI() {
         val intent = getIntent()
         val building : String? = intent.getStringExtra("building")
         val floor: String? = intent.getStringExtra("floor")
@@ -109,17 +129,62 @@ open class LabelActivity : AppCompatActivity() {
         val json = gson.toJson(data)
         Log.i("json", json)
 
-        transitionToList()
+        var client = OkHttpClient()
+        val okHttpClient = OkHttpClient.Builder()
 
-        if (!wifiManager.isWifiEnabled) {
-            Toast.makeText(this, R.string.prompt_enabling_wifi, Toast.LENGTH_SHORT).show()
-            wifiManager.isWifiEnabled()
+        // Create a trust manager that does not validate certificate chains
+        val trustAllCerts: Array<TrustManager> = arrayOf(object : X509TrustManager {
+            override fun checkClientTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+            }
+
+            override fun checkServerTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+            }
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
+
+        // Install the all-trusting trust manager
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, SecureRandom())
+
+        // Create an ssl socket factory with our all-trusting manager
+        val sslSocketFactory = sslContext.socketFactory
+        if (trustAllCerts.isNotEmpty() && trustAllCerts.first() is X509TrustManager) {
+            Log.i(ContentValues.TAG, "ssl")
+            okHttpClient.sslSocketFactory(
+                sslSocketFactory,
+                trustAllCerts.first() as X509TrustManager
+            )
+            val allow = HostnameVerifier { _, _ -> true }
+            okHttpClient.hostnameVerifier(allow)
+            Log.i(ContentValues.TAG, "ssl2")
         }
 
-        label_finish_btn.setOnClickListener {
-            finish()
-        }
+        client = okHttpClient.build()
 
+        val formBody = json.toRequestBody()
+        val request = Request.Builder()
+            .url("https://virtserver.swaggerhub.com/chougitom/podm/1.0.0/upload")
+            .post(formBody)
+            .addHeader("Content-Type","application/json")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("STATUS", response.body!!.string())
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
