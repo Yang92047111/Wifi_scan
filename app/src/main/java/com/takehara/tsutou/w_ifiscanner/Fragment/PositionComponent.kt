@@ -8,12 +8,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
@@ -28,14 +23,16 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-
+import kotlinx.android.synthetic.main.fragment_position_component.*
+import kotlinx.android.synthetic.main.fragment_position_component.view.*
+import org.angmarch.views.NiceSpinner
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
 
 /**
  * A simple [Fragment] subclass.
@@ -45,8 +42,12 @@ import androidx.core.app.ActivityCompat
 class PositionComponent : Fragment() {
     // TODO: Rename and change types of parameters
 
-
+    private var wifidata: ArrayList<List<Data>>? = ArrayList()
+    private var beforewifidata: ArrayList<List<Data>>? = ArrayList()
     private val gson = Gson()
+    private var wifiReceiverRegistered: Boolean = false
+    private var jsonString: ArrayList<List<PositionComponent.Data>>? = ArrayList()
+
     data class Upload(
         @SerializedName("test") var test: Boolean,
         @SerializedName("data") var data: ArrayList<List<PositionComponent.Data>>
@@ -56,22 +57,20 @@ class PositionComponent : Fragment() {
         @SerializedName("rssi") var rssi: String,
         @SerializedName("ssid") var ssid: String
     )
-    private var wifiReceiverRegistered: Boolean = false
-    private var jsonString: ArrayList<List<PositionComponent.Data>>? = ArrayList()
-
-    companion object {
-        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_position_component, container, false)
+        val car_types = mutableListOf<String>("N95", "N96")
+        val car_spinner = view.car_spinner as NiceSpinner
+        car_spinner.setTextColor(Color.BLACK)
+        car_spinner.attachDataSource(car_types)
+        view.classroom.setText("綜合科館109-2")
+        val i = 1
+        return view
     }
 
-    private val wifiManager: WifiManager
-        get() =this.activity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
-
-    private val wifiReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val results = wifiManager.scanResults as ArrayList<ScanResult>
-
-        }
-    }
     private fun wifiList() {
         val APdata = ArrayList<PositionComponent.Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
@@ -83,22 +82,22 @@ class PositionComponent : Fragment() {
         }
 
         jsonString = arrayListOf(APdata)
-        Log.i("",jsonString.toString())
+        wifidata= jsonString
+        Log.i("wifitest",jsonString.toString())
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        wifiList()
-        UploadAPI()
-        val view = inflater.inflate(R.layout.fragment_position_component, container, false)
-        // view.classroom.setText("綜合科館109-2")
-
-        return view
-
+    companion object {
+        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120000000
     }
 
+    private val wifiManager: WifiManager
+        get() =this.activity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+    private val wifiReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val results = wifiManager.scanResults as ArrayList<ScanResult>
+        }
+    }
     private fun UploadAPI() {
 
         val data =
@@ -110,7 +109,6 @@ class PositionComponent : Fragment() {
             }
         val json = gson.toJson(data)
         Log.i("json", json)
-
         var client = OkHttpClient()
         val okHttpClient = OkHttpClient.Builder()
 
@@ -159,21 +157,38 @@ class PositionComponent : Fragment() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-
             }
 
             @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                Log.d("STATUS", response.body!!.string())
+            override fun onResponse(call: Call, response: Response
+            )  {
+                val room =response.body!!.string()
+               Log.d("STATUS", room)
+                Thread(Runnable {
+                    activity?.runOnUiThread(java.lang.Runnable {
+                        classroom.setText(room)
+                    })
+                }).start()
             }
         })
     }
 
-    override fun onStart() {
-        super.onStart()
-        startScanning()
-    }
+    override fun onResume() {
+        super.onResume()
+        val i =1
+        wifiList()
+        UploadAPI()
+        beforewifidata = wifidata
 
+        classroom.setOnClickListener(){
+            wifiList()
+            if(beforewifidata!=wifidata) {
+
+                beforewifidata=wifidata
+                UploadAPI()
+            }
+        }
+    }
 
     override fun onStop() {
         stopScanning()
@@ -194,9 +209,7 @@ class PositionComponent : Fragment() {
             wifiReceiverRegistered = false
         }
     }
-    private fun refreshList() {
-        wifiManager.startScan()
-    }
+
     private fun checkPermissions(): Boolean {
         val context = context ?: return false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
@@ -220,6 +233,4 @@ class PositionComponent : Fragment() {
             }
         }
     }
-
-
 }

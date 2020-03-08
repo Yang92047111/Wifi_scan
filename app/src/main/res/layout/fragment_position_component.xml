@@ -17,8 +17,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/test"
-            android:layout_width="450dp"
-            android:layout_height="400dp"
+            android:layout_width="400dp"
+            android:layout_height="350dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:visibility="visible"
@@ -26,11 +26,27 @@
             app:lottie_fileName="location.json"
             app:lottie_loop="true"
             app:lottie_speed="1.5" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:text="@string/car"
+            android:textSize="21sp"
+            android:textColor="@color/colorLabel"/>
+
+        <org.angmarch.views.NiceSpinner
+            android:id="@+id/car_spinner"
+            android:layout_width="300dp"
+            android:layout_height="54.38dp"
+            android:layout_gravity="center"
+            tools:layout_editor_absoluteX="162dp"
+            tools:layout_editor_absoluteY="231dp"
+            tools:ignore="MissingConstraints" />
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/classroom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:paddingBottom="10dp"
             android:paddingLeft="20dp"
