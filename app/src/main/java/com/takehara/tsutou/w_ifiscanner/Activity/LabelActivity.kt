@@ -64,6 +64,7 @@ open class LabelActivity : AppCompatActivity() {
 
     private var listFragmentVisible: Boolean = false
     private var wifiReceiverRegistered: Boolean = false
+    private var scanAgain: Boolean = false
 
     private val wifiReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -73,18 +74,27 @@ open class LabelActivity : AppCompatActivity() {
                 restart.visibility = View.VISIBLE
                 finish.visibility = View.VISIBLE
             }
+            scanAgain = true
+            wifiList()
         }
     }
 
     private fun wifiList() {
         val APdata = ArrayList<Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
-        for (result in results) {
-            val mac = result.BSSID.replace(":", "")
-            val newData = Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
-            APdata.add(newData)
+        if (results != null) {
+            for (result in results) {
+                val mac = result.BSSID.replace(":", "")
+                val newData = Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+                APdata.add(newData)
+            }
         }
         jsonString = arrayListOf(APdata)
+        if (scanAgain) {
+            jsonString!!.add(APdata)
+        }
+        Log.i("beforeJson", APdata.toString())
+        Log.i("afterJson", jsonString.toString())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,8 +111,9 @@ open class LabelActivity : AppCompatActivity() {
             wifiManager.isWifiEnabled()
         }
 
-        restart.setOnClickListener(){
+        restart.setOnClickListener {
             refreshList()
+            scanAgain = true
             restart.visibility = View.GONE
             finish.visibility = View.GONE
         }
@@ -110,6 +121,7 @@ open class LabelActivity : AppCompatActivity() {
         finish.setOnClickListener {
             UploadAPI()
             finish()
+            Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -191,7 +203,7 @@ open class LabelActivity : AppCompatActivity() {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                Log.d("STATUS", response.body!!.string())
+                Log.d("STATUS", response.code.toString())
             }
         })
     }
@@ -218,6 +230,7 @@ open class LabelActivity : AppCompatActivity() {
 
     fun onResumeFragment(fragment: Fragment) {
         listFragmentVisible = false
+        scanAgain = false
 
         if (fragment == listFragment) {
             listFragmentVisible = true
@@ -263,6 +276,8 @@ open class LabelActivity : AppCompatActivity() {
 
     private fun refreshList() {
         listFragment?.clearItems()
+        scanAgain = true
+        wifiList()
         wifiManager.startScan()
     }
 
