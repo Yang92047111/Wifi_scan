@@ -96,7 +96,6 @@ open class LabelActivity : AppCompatActivity() {
         if (scanAgain) {
             jsonString!!.add(APdata)
         }
-        Log.i("beforeJson", APdata.toString())
         Log.i("afterJson", jsonString.toString())
     }
 
@@ -104,8 +103,6 @@ open class LabelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_label)
         setTitle(R.string.title_wifi)
-
-        wifiList()
 
         transitionToList()
 
@@ -195,8 +192,8 @@ open class LabelActivity : AppCompatActivity() {
         val formBody = json.toRequestBody()
         val request = Request.Builder()
 //            James's server
-//            .url("https://140.124.73.63:3003/api/user/addtest")
-            .url("https://podm.chc.nctu.me/api/upload")
+            .url("https://140.124.73.63:3003/api/user/addtest")
+//            .url("https://podm.chc.nctu.me/api/upload")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -209,24 +206,9 @@ open class LabelActivity : AppCompatActivity() {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 ResponseCode = response.code
-                Log.d("STATUS", response.body?.string())
+                Log.i("BODY", response.body?.string())
             }
         })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.wifi, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.action_refresh -> {
-                refreshList()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
     }
 
     override fun onStart() {

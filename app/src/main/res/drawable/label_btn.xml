@@ -12,5 +12,6 @@
         android:state_focused="false"
         android:state_pressed="true"
         android:drawable="@drawable/botton_background_over" />
-    <item android:drawable="@drawable/botton_background" />
+    <item
+        android:drawable="@drawable/botton_background" />
 </selector>
