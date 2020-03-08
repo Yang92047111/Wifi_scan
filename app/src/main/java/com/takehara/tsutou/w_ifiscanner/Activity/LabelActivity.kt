@@ -24,10 +24,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.util.*
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import kotlin.collections.ArrayList
 
 open class LabelActivity : AppCompatActivity() {
 
@@ -47,7 +49,7 @@ open class LabelActivity : AppCompatActivity() {
 
     data class Data (
         @SerializedName("mac") var mac: String,
-        @SerializedName("rssi") var rssi: String,
+        @SerializedName("rssi") var rssi: Int,
         @SerializedName("ssid") var ssid: String
     )
 
@@ -61,6 +63,7 @@ open class LabelActivity : AppCompatActivity() {
         get() = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     private var listFragment: LabelWifiList? = null
+    private var ResponseCode: Int = 0
 
     private var listFragmentVisible: Boolean = false
     private var wifiReceiverRegistered: Boolean = false
@@ -84,8 +87,8 @@ open class LabelActivity : AppCompatActivity() {
         val results = wifiManager.scanResults as ArrayList<ScanResult>
         if (results != null) {
             for (result in results) {
-                val mac = result.BSSID.replace(":", "")
-                val newData = Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+                val mac = result.BSSID.replace(":", "").toUpperCase(Locale.ROOT)
+                val newData = Data(mac = mac, rssi = result.level, ssid = result.SSID)
                 APdata.add(newData)
             }
         }
@@ -113,6 +116,7 @@ open class LabelActivity : AppCompatActivity() {
 
         restart.setOnClickListener {
             refreshList()
+
             scanAgain = true
             restart.visibility = View.GONE
             finish.visibility = View.GONE
@@ -121,6 +125,7 @@ open class LabelActivity : AppCompatActivity() {
         finish.setOnClickListener {
             UploadAPI()
             finish()
+
             Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
         }
     }
@@ -177,21 +182,21 @@ open class LabelActivity : AppCompatActivity() {
         // Create an ssl socket factory with our all-trusting manager
         val sslSocketFactory = sslContext.socketFactory
         if (trustAllCerts.isNotEmpty() && trustAllCerts.first() is X509TrustManager) {
-            Log.i(ContentValues.TAG, "ssl")
             okHttpClient.sslSocketFactory(
                 sslSocketFactory,
                 trustAllCerts.first() as X509TrustManager
             )
             val allow = HostnameVerifier { _, _ -> true }
             okHttpClient.hostnameVerifier(allow)
-            Log.i(ContentValues.TAG, "ssl2")
         }
 
         client = okHttpClient.build()
 
         val formBody = json.toRequestBody()
         val request = Request.Builder()
-            .url("https://140.124.73.63:3003/api/user/addtest")
+//            James's server
+//            .url("https://140.124.73.63:3003/api/user/addtest")
+            .url("https://podm.chc.nctu.me/api/upload")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -203,7 +208,8 @@ open class LabelActivity : AppCompatActivity() {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                Log.d("STATUS", response.code.toString())
+                ResponseCode = response.code
+                Log.d("STATUS", response.body?.string())
             }
         })
     }
