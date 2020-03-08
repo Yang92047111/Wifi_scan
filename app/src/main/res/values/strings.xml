@@ -25,6 +25,7 @@
     <string name="station_level">%1$s dBm</string>
 
     <string name="building">大樓：</string>
+    <string name="car">消毒車：</string>
     <string name="floor">樓層：</string>
     <string name="classroom">教室：</string>
     <string name="restart">重新標記</string>
