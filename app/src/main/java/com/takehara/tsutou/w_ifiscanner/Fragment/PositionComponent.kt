@@ -31,14 +31,6 @@ import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import org.angmarch.views.NiceSpinner
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PositionComponent.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PositionComponent : Fragment() {
     // TODO: Rename and change types of parameters
 
@@ -46,11 +38,11 @@ class PositionComponent : Fragment() {
     private var beforewifidata: ArrayList<List<Data>>? = ArrayList()
     private val gson = Gson()
     private var wifiReceiverRegistered: Boolean = false
-    private var jsonString: ArrayList<List<PositionComponent.Data>>? = ArrayList()
+    private var jsonString: ArrayList<List<Data>>? = ArrayList()
 
     data class Upload(
         @SerializedName("test") var test: Boolean,
-        @SerializedName("data") var data: ArrayList<List<PositionComponent.Data>>
+        @SerializedName("data") var data: ArrayList<List<Data>>
     )
     data class Data (
         @SerializedName("mac") var mac: String,
@@ -67,27 +59,25 @@ class PositionComponent : Fragment() {
         car_spinner.setTextColor(Color.BLACK)
         car_spinner.attachDataSource(car_types)
         view.classroom.setText("綜合科館109-2")
-        val i = 1
         return view
     }
 
     private fun wifiList() {
-        val APdata = ArrayList<PositionComponent.Data>()
+        val APdata = ArrayList<Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
         for (result in results) {
             val mac = result.BSSID.replace(":", "")
             val newData =
-                PositionComponent.Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+                Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
             APdata.add(newData)
         }
 
         jsonString = arrayListOf(APdata)
         wifidata= jsonString
-        Log.i("wifitest",jsonString.toString())
     }
 
     companion object {
-        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120000000
+        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
     }
 
     private val wifiManager: WifiManager
@@ -98,11 +88,12 @@ class PositionComponent : Fragment() {
             val results = wifiManager.scanResults as ArrayList<ScanResult>
         }
     }
+
     private fun UploadAPI() {
 
         val data =
             jsonString?.let {
-                PositionComponent.Upload(
+                Upload(
                     test = true,
                     data = it
                 )
@@ -163,7 +154,6 @@ class PositionComponent : Fragment() {
             override fun onResponse(call: Call, response: Response
             )  {
                 val room =response.body!!.string()
-               Log.d("STATUS", room)
                 Thread(Runnable {
                     activity?.runOnUiThread(java.lang.Runnable {
                         classroom.setText(room)
@@ -175,7 +165,6 @@ class PositionComponent : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val i =1
         wifiList()
         UploadAPI()
         beforewifidata = wifidata
@@ -198,7 +187,6 @@ class PositionComponent : Fragment() {
     private fun startScanning() {
         if (checkPermissions()) {
             activity?.applicationContext?.registerReceiver(wifiReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
-            Log.i("","scan")
             wifiReceiverRegistered = true
         }
     }

@@ -13,12 +13,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/test"
             android:layout_width="400dp"
-            android:layout_height="350dp"
+            android:layout_height="300dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:visibility="visible"
@@ -26,11 +24,13 @@
             app:lottie_fileName="location.json"
             app:lottie_loop="true"
             app:lottie_speed="1.5" />
+
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="85dp"
             android:layout_height="29dp"
             android:text="@string/car"
             android:textSize="21sp"
+            android:layout_marginLeft="50dp"
             android:textColor="@color/colorLabel"/>
 
         <org.angmarch.views.NiceSpinner
@@ -60,9 +60,9 @@
             fancy:fb_fontIconSize="50dp"
             fancy:fb_iconPosition="left"
             fancy:fb_radius="80dp"
-            fancy:fb_text="綜合科館109-1"
             fancy:fb_textSize="35dp"
             fancy:fb_textColor="#FFFFFF" />
+
     </LinearLayout>
 
 </FrameLayout>
