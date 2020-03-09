@@ -27,6 +27,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import java.util.*
@@ -94,17 +95,19 @@ class PositionComponent : Fragment() {
     }
 
     private fun UploadAPI() {
+        var postData = ArrayList<Upload>()
         val second=System.currentTimeMillis()/1000
         val time = second.toInt()
         val data =
-            jsonString?.let {
                 Upload(
                     timestamp = time,
                     disinfectionId = "FUCK",
-                    data = it
+                    data = jsonString
                 )
-            }
-        val json = gson.toJson(data)
+
+        postData.add(data)
+
+        val json = gson.toJson(postData)
         Log.i("json", json)
         var client = OkHttpClient()
         val okHttpClient = OkHttpClient.Builder()

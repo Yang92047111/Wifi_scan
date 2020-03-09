@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.R
@@ -73,3 +71,5 @@ class LabelComponent : Fragment() {
     }
 
 }
+
+
