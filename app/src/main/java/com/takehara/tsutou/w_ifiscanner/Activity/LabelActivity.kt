@@ -122,8 +122,6 @@ open class LabelActivity : AppCompatActivity() {
         finish.setOnClickListener {
             UploadAPI()
             finish()
-
-            Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -192,8 +190,8 @@ open class LabelActivity : AppCompatActivity() {
         val formBody = json.toRequestBody()
         val request = Request.Builder()
 //            James's server
-//            .url("https://140.124.73.63:3003/api/user/addtest")
-            .url("https://podm.chc.nctu.me/api/upload")
+            .url("https://140.124.73.63:3003/api/user/addtest")
+//            .url("https://podm.chc.nctu.me/api/upload")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -202,11 +200,10 @@ open class LabelActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
 
             }
-
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 ResponseCode = response.code
-                Log.i("STATUS", response.code.toString())
+                Log.i("STATUS", ResponseCode.toString())
             }
         })
     }

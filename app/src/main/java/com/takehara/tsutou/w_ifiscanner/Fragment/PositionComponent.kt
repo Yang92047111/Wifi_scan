@@ -44,7 +44,7 @@ class PositionComponent : Fragment() {
     private var jsonString: ArrayList<Data>? = ArrayList()
 
 
-    data class Upload(
+    data class Upload (
         @SerializedName("timestamp") var timestamp: Int,
         @SerializedName("disinfectionId") var disinfectionId: String,
         @SerializedName("data") var data: ArrayList<Data>
@@ -61,9 +61,6 @@ class PositionComponent : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
-        val car_types = mutableListOf<String>("N95", "N96")
-        val time = System.currentTimeMillis()
-        Log.i("timestamp",time.toString())
         view.classroom.setText("綜合科館109-2")
         return view
     }
@@ -95,10 +92,10 @@ class PositionComponent : Fragment() {
             val results = wifiManager.scanResults as ArrayList<ScanResult>
         }
     }
+
     private fun UploadAPI() {
         val second=System.currentTimeMillis()/1000
         val time = second.toInt()
-        Log.i("timestamp",time.toString())
         val data =
             jsonString?.let {
                 Upload(
