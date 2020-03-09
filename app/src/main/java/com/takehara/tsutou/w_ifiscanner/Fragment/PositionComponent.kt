@@ -29,6 +29,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import org.angmarch.views.NiceSpinner
@@ -55,8 +56,7 @@ class PositionComponent : Fragment() {
     private var wifiReceiverRegistered: Boolean = false
     private var jsonString: ArrayList<Data> = ArrayList()
     private var taskHandler = Handler()
-
-    data class Upload(
+      data class Upload(
         @SerializedName("timestamp") var timestamp: Int,
         @SerializedName("disinfectionId") var disinfectionId: String,
         @SerializedName("data") var data: ArrayList<Data>
@@ -90,8 +90,8 @@ class PositionComponent : Fragment() {
         }
 
         jsonString = APdata
-        wifidata= jsonString
-        Log.i("wifitest",jsonString.toString())
+
+        Log.i("wifitest",APdata.toString())
     }
 
     companion object {
@@ -107,18 +107,21 @@ class PositionComponent : Fragment() {
         }
     }
     private fun UploadAPI() {
+        var postData = ArrayList<Upload>()
         val second=System.currentTimeMillis()/1000
         val time = second.toInt()
         Log.i("timestamp",time.toString())
+
         val data =
-            jsonString?.let {
                 Upload(
                     timestamp = time,
                     disinfectionId = "FUCK",
-                    data = it
+                    data = jsonString
                 )
-            }
-        val json = gson.toJson(data)
+
+        postData.add(data)
+
+        val json = gson.toJson(postData)
         Log.i("json", json)
         var client = OkHttpClient()
         val okHttpClient = OkHttpClient.Builder()
