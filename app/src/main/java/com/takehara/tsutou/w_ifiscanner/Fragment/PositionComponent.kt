@@ -23,14 +23,12 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import android.content.Intent
-import android.graphics.Color
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
-import org.angmarch.views.NiceSpinner
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,7 +45,8 @@ class PositionComponent : Fragment() {
 
 
     data class Upload(
-        @SerializedName("test") var test: Boolean,
+        @SerializedName("timestamp") var timestamp: Int,
+        @SerializedName("disinfectionId") var disinfectionId: String,
         @SerializedName("data") var data: ArrayList<List<Data>>
     )
 
@@ -62,8 +61,9 @@ class PositionComponent : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
-        mutableListOf<String>("N95", "N96")
-
+        val car_types = mutableListOf<String>("N95", "N96")
+        val time=System.currentTimeMillis()
+        Log.i("timestamp",time.toString())
         view.classroom.setText("綜合科館109-2")
         return view
     }
@@ -74,12 +74,12 @@ class PositionComponent : Fragment() {
         for (result in results) {
             val mac = result.BSSID.replace(":", "").toUpperCase(Locale.ROOT)
             val newData =
-                Data(mac = mac, rssi = result.level, ssid = result.SSID)
+                PositionComponent.Data(mac = mac, rssi = result.level, ssid = result.SSID)
             APdata.add(newData)
         }
 
         jsonString = arrayListOf(APdata)
-        wifidata= jsonString
+        wifidata = jsonString
         Log.i("wifitest",jsonString.toString())
     }
 
@@ -96,10 +96,14 @@ class PositionComponent : Fragment() {
         }
     }
     private fun UploadAPI() {
+        val second=System.currentTimeMillis()/1000
+        val time = second.toInt()
+        Log.i("timestamp",time.toString())
         val data =
             jsonString?.let {
                 Upload(
-                    test = true,
+                    timestamp = time,
+                    disinfectionId = "FUCK",
                     data = it
                 )
             }
