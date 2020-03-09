@@ -27,10 +27,16 @@ import android.graphics.Color
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import org.angmarch.views.NiceSpinner
+import java.security.Timestamp
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,29 +49,32 @@ import org.angmarch.views.NiceSpinner
 class PositionComponent : Fragment() {
     // TODO: Rename and change types of parameters
 
-    private var wifidata: ArrayList<List<Data>>? = ArrayList()
-    private var beforewifidata: ArrayList<List<Data>>? = ArrayList()
+    private var wifidata: ArrayList<Data>? = ArrayList()
+    private var beforewifidata: ArrayList<Data>? = ArrayList()
     private val gson = Gson()
     private var wifiReceiverRegistered: Boolean = false
-    private var jsonString: ArrayList<List<PositionComponent.Data>>? = ArrayList()
+    private var jsonString: ArrayList<Data> = ArrayList()
     private var taskHandler = Handler()
 
     data class Upload(
-        @SerializedName("test") var test: Boolean,
-        @SerializedName("data") var data: ArrayList<List<PositionComponent.Data>>
+        @SerializedName("timestamp") var timestamp: Int,
+        @SerializedName("disinfectionId") var disinfectionId: String,
+        @SerializedName("data") var data: ArrayList<Data>
     )
     data class Data (
         @SerializedName("mac") var mac: String,
-        @SerializedName("rssi") var rssi: String,
+        @SerializedName("rssi") var rssi: Int,
         @SerializedName("ssid") var ssid: String
     )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
         val car_types = mutableListOf<String>("N95", "N96")
-
+        val time=System.currentTimeMillis()
+        Log.i("timestamp",time.toString())
         view.classroom.setText("綜合科館109-2")
         return view
     }
@@ -76,11 +85,11 @@ class PositionComponent : Fragment() {
         for (result in results) {
             val mac = result.BSSID.replace(":", "")
             val newData =
-                PositionComponent.Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+                PositionComponent.Data(mac = mac, rssi = result.level, ssid = result.SSID)
             APdata.add(newData)
         }
 
-        jsonString = arrayListOf(APdata)
+        jsonString = APdata
         wifidata= jsonString
         Log.i("wifitest",jsonString.toString())
     }
@@ -98,10 +107,14 @@ class PositionComponent : Fragment() {
         }
     }
     private fun UploadAPI() {
+        val second=System.currentTimeMillis()/1000
+        val time = second.toInt()
+        Log.i("timestamp",time.toString())
         val data =
             jsonString?.let {
-                PositionComponent.Upload(
-                    test = true,
+                Upload(
+                    timestamp = time,
+                    disinfectionId = "FUCK",
                     data = it
                 )
             }
