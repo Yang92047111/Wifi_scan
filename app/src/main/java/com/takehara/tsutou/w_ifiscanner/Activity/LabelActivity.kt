@@ -218,7 +218,6 @@ open class LabelActivity : AppCompatActivity() {
 
     fun onResumeFragment(fragment: Fragment) {
         listFragmentVisible = false
-
         if (fragment == listFragment) {
             listFragmentVisible = true
             refreshList()
@@ -285,6 +284,7 @@ open class LabelActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION -> {
                 startScanning()
+                Log.i("fuck", "scannnnnn")
             }
         }
     }

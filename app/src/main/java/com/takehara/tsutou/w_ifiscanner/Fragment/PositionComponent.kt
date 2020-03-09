@@ -24,6 +24,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import android.content.Intent
 import android.graphics.Color
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
@@ -67,10 +68,26 @@ class PositionComponent : Fragment() {
         car_spinner.setTextColor(Color.BLACK)
         car_spinner.attachDataSource(car_types)
         view.classroom.setText("綜合科館109-2")
-        val i = 1
+        wifiList()
+        UploadAPI()
+       beforewifidata = wifidata
+//        view.classroom.setOnClickListener(){
+//            wifiManager.startScan()
+//        }
+        taskHandler.postDelayed(runnable,10000)
         return view
     }
-
+    private var runnable = object:Runnable{
+        override fun run(){
+            wifiList()
+            Log.i("gg","ggg")
+            if(beforewifidata!=wifidata) {
+                beforewifidata=wifidata
+                UploadAPI()
+            }
+        }
+    }
+    private var taskHandler = Handler()
     private fun wifiList() {
         val APdata = ArrayList<PositionComponent.Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
@@ -87,7 +104,7 @@ class PositionComponent : Fragment() {
     }
 
     companion object {
-        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120000000
+        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
     }
 
     private val wifiManager: WifiManager
@@ -99,7 +116,6 @@ class PositionComponent : Fragment() {
         }
     }
     private fun UploadAPI() {
-
         val data =
             jsonString?.let {
                 PositionComponent.Upload(
@@ -175,19 +191,7 @@ class PositionComponent : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val i =1
-        wifiList()
-        UploadAPI()
-        beforewifidata = wifidata
 
-        classroom.setOnClickListener(){
-            wifiList()
-            if(beforewifidata!=wifidata) {
-
-                beforewifidata=wifidata
-                UploadAPI()
-            }
-        }
     }
 
     override fun onStop() {
@@ -219,6 +223,7 @@ class PositionComponent : Fragment() {
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
                 PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION
             )
+
             return false
         } else {
             return true
@@ -230,6 +235,7 @@ class PositionComponent : Fragment() {
         when (requestCode) {
             PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION -> {
                 startScanning()
+
             }
         }
     }
