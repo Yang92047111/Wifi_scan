@@ -99,13 +99,17 @@ class PositionComponent : Fragment() {
         val second=System.currentTimeMillis()/1000
         val time = second.toInt()
         val data =
+            jsonString?.let {
                 Upload(
                     timestamp = time,
                     disinfectionId = "FUCK",
-                    data = jsonString
+                    data = it
                 )
+            }
 
-        postData.add(data)
+        if (data != null) {
+            postData.add(data)
+        }
 
         val json = gson.toJson(postData)
         Log.i("json", json)
