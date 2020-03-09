@@ -31,6 +31,8 @@ import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import org.angmarch.views.NiceSpinner
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PositionComponent : Fragment() {
 
@@ -51,7 +53,7 @@ class PositionComponent : Fragment() {
 
     data class Data (
         @SerializedName("mac") var mac: String,
-        @SerializedName("rssi") var rssi: String,
+        @SerializedName("rssi") var rssi: Int,
         @SerializedName("ssid") var ssid: String
     )
 
@@ -70,9 +72,9 @@ class PositionComponent : Fragment() {
         val APdata = ArrayList<Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
         for (result in results) {
-            val mac = result.BSSID.replace(":", "")
+            val mac = result.BSSID.replace(":", "").toUpperCase(Locale.ROOT)
             val newData =
-                Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+                Data(mac = mac, rssi = result.level, ssid = result.SSID)
             APdata.add(newData)
         }
 
@@ -172,7 +174,6 @@ class PositionComponent : Fragment() {
             beforewifidata = wifidata
             wifiManager.startScan()
             wifiList()
-            Log.i("gg", "ggg")
             if (beforewifidata != wifidata) {
                 beforewifidata = wifidata
                 UploadAPI()
@@ -198,7 +199,6 @@ class PositionComponent : Fragment() {
     private fun startScanning() {
         if (checkPermissions()) {
             activity?.applicationContext?.registerReceiver(wifiReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
-            Log.i("","scan")
             wifiReceiverRegistered = true
         }
     }

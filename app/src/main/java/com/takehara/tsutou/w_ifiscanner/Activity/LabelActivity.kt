@@ -144,7 +144,7 @@ open class LabelActivity : AppCompatActivity() {
         val data =
             jsonString?.let {
                 Upload(
-                    test = true,
+                    test = false,
                     location = newLocation,
                     data = it
                 )
@@ -192,8 +192,8 @@ open class LabelActivity : AppCompatActivity() {
         val formBody = json.toRequestBody()
         val request = Request.Builder()
 //            James's server
-            .url("https://140.124.73.63:3003/api/user/addtest")
-//            .url("https://podm.chc.nctu.me/api/upload")
+//            .url("https://140.124.73.63:3003/api/user/addtest")
+            .url("https://podm.chc.nctu.me/api/upload")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -206,7 +206,7 @@ open class LabelActivity : AppCompatActivity() {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 ResponseCode = response.code
-                Log.i("BODY", response.body?.string())
+                Log.i("STATUS", response.code.toString())
             }
         })
     }
