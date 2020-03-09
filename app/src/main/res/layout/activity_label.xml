@@ -13,7 +13,7 @@
         <FrameLayout
             android:id="@+id/label_list"
             android:layout_width="409dp"
-            android:layout_height="557dp"
+            android:layout_height="480dp"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="1dp"
             tools:layout_editor_absoluteY="1dp" />
@@ -23,6 +23,7 @@
             android:layout_width="300dp"
             android:layout_height="54.38dp"
             android:layout_gravity="center"
+            android:layout_marginTop="15dp"
             android:background="@drawable/label_btn"
             android:text="@string/restart"
             android:textColor="@color/colorLabel"

@@ -1,15 +1,17 @@
 package com.takehara.tsutou.w_ifiscanner.Activity
 
 import android.Manifest
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -63,7 +65,7 @@ open class LabelActivity : AppCompatActivity() {
         get() = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     private var listFragment: LabelWifiList? = null
-    private var ResponseCode: Int = 0
+    private var responseCode: Int = 0
 
     private var listFragmentVisible: Boolean = false
     private var wifiReceiverRegistered: Boolean = false
@@ -96,7 +98,7 @@ open class LabelActivity : AppCompatActivity() {
         if (scanAgain) {
             jsonString!!.add(APdata)
         }
-        Log.i("afterJson", jsonString.toString())
+        Log.i("Json", jsonString.toString())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,10 +204,24 @@ open class LabelActivity : AppCompatActivity() {
             }
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                ResponseCode = response.code
-                Log.i("STATUS", ResponseCode.toString())
+                if (response.code == 200) {
+                    responseCode = response.code
+                }
+                ResponseSuccess()
             }
         })
+    }
+
+    private fun ResponseSuccess() {
+        Looper.prepare()
+        if (responseCode == 200) {
+            Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
+            Log.i("private", responseCode.toString())
+        }else {
+            Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
+            Log.i("private", responseCode.toString())
+        }
+        Looper.loop()
     }
 
     override fun onStart() {
