@@ -32,51 +32,47 @@ import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import org.angmarch.views.NiceSpinner
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PositionComponent.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PositionComponent : Fragment() {
-    // TODO: Rename and change types of parameters
+
+    private val gson = Gson()
+    private var taskHandler = Handler()
+
+    private var wifiReceiverRegistered: Boolean = false
 
     private var wifidata: ArrayList<List<Data>>? = ArrayList()
     private var beforewifidata: ArrayList<List<Data>>? = ArrayList()
-    private val gson = Gson()
-    private var wifiReceiverRegistered: Boolean = false
-    private var jsonString: ArrayList<List<PositionComponent.Data>>? = ArrayList()
-    private var taskHandler = Handler()
+    private var jsonString: ArrayList<List<Data>>? = ArrayList()
+
 
     data class Upload(
         @SerializedName("test") var test: Boolean,
-        @SerializedName("data") var data: ArrayList<List<PositionComponent.Data>>
+        @SerializedName("data") var data: ArrayList<List<Data>>
     )
+
     data class Data (
         @SerializedName("mac") var mac: String,
         @SerializedName("rssi") var rssi: String,
         @SerializedName("ssid") var ssid: String
     )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
-        val car_types = mutableListOf<String>("N95", "N96")
+        mutableListOf<String>("N95", "N96")
 
         view.classroom.setText("綜合科館109-2")
         return view
     }
 
     private fun wifiList() {
-        val APdata = ArrayList<PositionComponent.Data>()
+        val APdata = ArrayList<Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
         for (result in results) {
             val mac = result.BSSID.replace(":", "")
             val newData =
-                PositionComponent.Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
+                Data(mac = mac, rssi = result.level.toString(), ssid = result.SSID)
             APdata.add(newData)
         }
 
@@ -100,7 +96,7 @@ class PositionComponent : Fragment() {
     private fun UploadAPI() {
         val data =
             jsonString?.let {
-                PositionComponent.Upload(
+                Upload(
                     test = true,
                     data = it
                 )
@@ -170,6 +166,7 @@ class PositionComponent : Fragment() {
             }
         })
     }
+
     private var runnable = object:Runnable {
         override fun run() {
             beforewifidata = wifidata
