@@ -39,15 +39,15 @@ class PositionComponent : Fragment() {
 
     private var wifiReceiverRegistered: Boolean = false
 
-    private var wifidata: ArrayList<List<Data>>? = ArrayList()
-    private var beforewifidata: ArrayList<List<Data>>? = ArrayList()
-    private var jsonString: ArrayList<List<Data>>? = ArrayList()
+    private var wifidata: ArrayList<Data>? = ArrayList()
+    private var beforewifidata: ArrayList<Data>? = ArrayList()
+    private var jsonString: ArrayList<Data>? = ArrayList()
 
 
     data class Upload(
         @SerializedName("timestamp") var timestamp: Int,
         @SerializedName("disinfectionId") var disinfectionId: String,
-        @SerializedName("data") var data: ArrayList<List<Data>>
+        @SerializedName("data") var data: ArrayList<Data>
     )
 
     data class Data (
@@ -62,7 +62,7 @@ class PositionComponent : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
         val car_types = mutableListOf<String>("N95", "N96")
-        val time=System.currentTimeMillis()
+        val time = System.currentTimeMillis()
         Log.i("timestamp",time.toString())
         view.classroom.setText("綜合科館109-2")
         return view
@@ -74,11 +74,11 @@ class PositionComponent : Fragment() {
         for (result in results) {
             val mac = result.BSSID.replace(":", "").toUpperCase(Locale.ROOT)
             val newData =
-                PositionComponent.Data(mac = mac, rssi = result.level, ssid = result.SSID)
+                Data(mac = mac, rssi = result.level, ssid = result.SSID)
             APdata.add(newData)
         }
 
-        jsonString = arrayListOf(APdata)
+        jsonString = APdata
         wifidata = jsonString
         Log.i("wifitest",jsonString.toString())
     }
