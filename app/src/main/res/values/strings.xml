@@ -13,6 +13,8 @@
     <string name="action_back">返回</string>
     <string name="action_scan_wifi">Wi-Fi Scan</string>
 
+    <string name="disinfectionId">消毒機：</string>
+
     <string name="prompt_loading">Loading&#8230;</string>
     <string name="prompt_settings_not_implemented">Settings not implemented</string>
     <string name="prompt_enabling_wifi">Enabling Wi-Fi&#8230;</string>

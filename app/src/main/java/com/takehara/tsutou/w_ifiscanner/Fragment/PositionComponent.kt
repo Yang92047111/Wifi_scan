@@ -7,30 +7,28 @@ import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.takehara.tsutou.w_ifiscanner.R
+import kotlinx.android.synthetic.main.fragment_position_component.*
+import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.util.*
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
-import android.content.Intent
-import android.os.Handler
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
-import kotlinx.android.synthetic.main.fragment_position_component.*
-import kotlinx.android.synthetic.main.fragment_position_component.view.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class PositionComponent : Fragment() {
@@ -61,6 +59,10 @@ class PositionComponent : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val bundle = this.arguments
+        Log.i("bundle", bundle.toString())
+        val myInt = bundle?.getCharSequence("disinfectionId")
+        Log.i("disinfectionId", myInt.toString())
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
         view.classroom.setText("綜合科館109-2")
         return view

@@ -80,7 +80,6 @@ open class LabelActivity : AppCompatActivity() {
                 finish.visibility = View.VISIBLE
             }
             scanAgain = true
-            wifiList()
         }
     }
 
