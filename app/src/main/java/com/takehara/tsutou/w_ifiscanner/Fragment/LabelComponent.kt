@@ -18,6 +18,8 @@ import org.angmarch.views.NiceSpinner
 
 class LabelComponent : Fragment() {
 
+    private var testStatus: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,8 +39,8 @@ class LabelComponent : Fragment() {
         floor_spinner.attachDataSource(floor_types)
 
         // Classroom spinner
-        val classroom_1F_types = mutableListOf<String>("107-1", "109-1", "108", "108-1", "108-2", "104", "105", "106", "第一演講廳")
-        val classroom_2F_types = mutableListOf<String>("205", "206-1", "206-2", "204", "201", "208", "211", "210")
+        val classroom_1F_types = mutableListOf<String>("104", "105", "106", "107-1", "108", "108-1", "108-2", "109-1", "第一演講廳")
+        val classroom_2F_types = mutableListOf<String>("201", "204", "205", "206-1", "206-2", "208", "210", "211")
         val classroom_3F_types = mutableListOf<String>("305", "306", "308", "311-1", "311-2")
         val classroom_spinner = view.classroom_spinner as NiceSpinner
         classroom_spinner.setTextColor(Color.BLACK)
@@ -58,10 +60,22 @@ class LabelComponent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.test_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                testStatus = true
+                Log.i("test_database", testStatus.toString())
+            }
+            else {
+                testStatus = false
+                Log.i("database", testStatus.toString())
+            }
+        }
+
         view.label_btn.setOnClickListener {
 
             val intent = Intent(activity, LabelActivity::class.java)
 
+            intent.putExtra("testStatus", testStatus)
             intent.putExtra("building", building_spinner.text.toString())
             intent.putExtra("floor", floor_spinner.text.toString())
             intent.putExtra("classroom", classroom_spinner.text.toString())

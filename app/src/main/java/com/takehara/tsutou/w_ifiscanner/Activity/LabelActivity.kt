@@ -130,6 +130,7 @@ open class LabelActivity : AppCompatActivity() {
     private fun UploadAPI() {
 
         val intent = getIntent()
+        val testStatus : Boolean = intent.getBooleanExtra("testStatus", false)
         val building : String? = intent.getStringExtra("building")
         val floor: String? = intent.getStringExtra("floor")
         val classroom: String? = intent.getStringExtra("classroom")
@@ -144,7 +145,7 @@ open class LabelActivity : AppCompatActivity() {
         val data =
             jsonString?.let {
                 Upload(
-                    test = false,
+                    test = testStatus,
                     location = newLocation,
                     data = it
                 )
@@ -191,6 +192,7 @@ open class LabelActivity : AppCompatActivity() {
 
         val formBody = json.toRequestBody()
         val request = Request.Builder()
+//            .url("https://140.124.73.132:8080/api/messages/")
 //            James's server
             .url("https://140.124.73.63:3003/api/user/addtest")
 //            .url("https://podm.chc.nctu.me/api/upload")
@@ -216,10 +218,10 @@ open class LabelActivity : AppCompatActivity() {
         Looper.prepare()
         if (responseCode == 200) {
             Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
-            Log.i("private", responseCode.toString())
+            Log.i("success", responseCode.toString())
         }else {
-            Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
-            Log.i("private", responseCode.toString())
+            Toast.makeText(this, R.string.failed_label, Toast.LENGTH_SHORT).show()
+            Log.i("failed", responseCode.toString())
         }
         Looper.loop()
     }
