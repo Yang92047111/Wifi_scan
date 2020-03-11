@@ -42,7 +42,6 @@ class PositionComponent : Fragment() {
     private var beforewifidata: ArrayList<Data>? = ArrayList()
     private var jsonString: ArrayList<Data>? = ArrayList()
 
-
     data class Upload (
         @SerializedName("timestamp") var timestamp: Int,
         @SerializedName("disinfectionId") var disinfectionId: String,
@@ -55,14 +54,28 @@ class PositionComponent : Fragment() {
         @SerializedName("ssid") var ssid: String
     )
 
+    data class ResponseData(
+        val code: Int = 0,
+        val result: ResponseResult? = null,
+        val message: String
+    )
+
+    data class ResponseResult (
+        val disinfectionId: String = "",
+        val location: ResponseLocation? = null,
+        val timestamp: Int = 0
+    )
+
+    data class ResponseLocation (
+        val building: String = "",
+        val floor: String = "",
+        val name: String = ""
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val bundle = this.arguments
-        Log.i("bundle", bundle.toString())
-        val myInt = bundle?.getCharSequence("disinfectionId")
-        Log.i("disinfectionId", myInt.toString())
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
         view.classroom.setText("綜合科館109-2")
         return view
@@ -104,7 +117,7 @@ class PositionComponent : Fragment() {
             jsonString?.let {
                 Upload(
                     timestamp = time,
-                    disinfectionId = "FUCK",
+                    disinfectionId = "01",
                     data = it
                 )
             }
@@ -156,27 +169,49 @@ class PositionComponent : Fragment() {
 
         val formBody = json.toRequestBody()
         val request = Request.Builder()
-            .url("https://140.124.73.63:3003/api/user/addtest")
+            .url("https://podm.chc.nctu.me/api/locate")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-            }
+                override fun onFailure(call: Call, e: IOException) {
 
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response
-            )  {
-                val room =response.body!!.string()
-                Log.d("STATUS", room)
-                Thread(Runnable {
-                    activity?.runOnUiThread(java.lang.Runnable {
-                        classroom.setText(room)
-                    })
-                }).start()
+                }
+                @Throws(IOException::class)
+                override fun onResponse(call: Call, response: Response)  {
+                    val locationJson = response.body
+
+                    if (response.code == 200) {
+//                        val locationString = locationJson
+                        Log.i("response", "locationString")
+                    }
+                    else {
+                        Log.i("post", "failed")
+                    }
+
+                    if (response.body != null) {
+                        val locationData: ResponseData = gson.fromJson(locationJson!!.charStream(), ResponseData::class.java)
+                        Log.i("fomJson", locationData.toString())
+
+                        Thread(Runnable {
+                            activity?.runOnUiThread(java.lang.Runnable {
+                                classroom.setText(locationData.result?.location?.building + locationData.result?.location?.name)
+                            })
+                        }).start()
+                    }
+                    else
+                    {
+                        Thread(Runnable {
+                            activity?.runOnUiThread(java.lang.Runnable {
+                                classroom.setText(" ")
+                            })
+                        }).start()
+                    }
+//                    val locationString = locationData.toString()
+                }
             }
-        })
+        )
     }
 
     private var runnable = object:Runnable {
@@ -188,7 +223,7 @@ class PositionComponent : Fragment() {
                 beforewifidata = wifidata
                 UploadAPI()
             }
-            taskHandler.postDelayed(this,5000)
+            taskHandler.postDelayed(this,10000)
         }
     }
 
@@ -197,7 +232,7 @@ class PositionComponent : Fragment() {
         wifiManager.startScan()
         wifiList()
         UploadAPI()
-        taskHandler.postDelayed(runnable,5000)
+        taskHandler.postDelayed(runnable,10000)
     }
 
     override fun onStop() {

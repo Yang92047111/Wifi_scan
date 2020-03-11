@@ -193,8 +193,8 @@ open class LabelActivity : AppCompatActivity() {
         val request = Request.Builder()
 //            .url("https://140.124.73.132:8080/api/messages/")
 //            James's server
-            .url("https://140.124.73.63:3003/api/user/addtest")
-//            .url("https://podm.chc.nctu.me/api/upload")
+//            .url("https://140.124.73.63:3003/api/user/addtest")
+            .url("https://podm.chc.nctu.me/api/upload")
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()

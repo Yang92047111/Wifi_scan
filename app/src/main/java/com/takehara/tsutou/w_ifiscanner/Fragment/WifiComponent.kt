@@ -22,7 +22,7 @@ class WifiComponent : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_wifi_component, container, false)
 
-        val disinfectionId_types = mutableListOf<String>("1", "2")
+        val disinfectionId_types = mutableListOf<String>("01", "02")
         val disinfectionId_spinner = view.disinfectionId_spinner as NiceSpinner
         disinfectionId_spinner.setTextColor(Color.BLACK)
         disinfectionId_spinner.attachDataSource(disinfectionId_types)
@@ -42,16 +42,5 @@ class WifiComponent : Fragment() {
         }
         return view
     }
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//
-//
-//    }
-
-}
-
-private fun Bundle.putChar(s: String, text: CharSequence?) {
 
 }
