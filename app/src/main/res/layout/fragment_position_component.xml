@@ -12,15 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:text="@string/car"
+            android:textSize="21sp"
+            android:textColor="@color/colorLabel"/>
+
+        <org.angmarch.views.NiceSpinner
+            android:id="@+id/car_spinner"
+            android:layout_width="300dp"
+            android:layout_height="54.38dp"
+            android:layout_gravity="center"
+            tools:layout_editor_absoluteX="162dp"
+            tools:layout_editor_absoluteY="231dp"
+            tools:ignore="MissingConstraints"/>
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/test"
-            android:layout_width="500dp"
-            android:layout_height="400dp"
+            android:id="@+id/locate_animate"
+            android:layout_width="400dp"
+            android:layout_height="300dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:visibility="visible"
-            app:lottie_autoPlay="true"
+            app:lottie_autoPlay="false"
             app:lottie_fileName="location.json"
             app:lottie_loop="true"
             app:lottie_speed="1.5" />
@@ -44,6 +59,16 @@
             fancy:fb_radius="80dp"
             fancy:fb_textSize="35dp"
             fancy:fb_textColor="#FFFFFF" />
+        <Button
+            android:id="@+id/locate_btn"
+            android:layout_width="300dp"
+            android:layout_height="54.38dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:text="@string/locate"
+            android:textSize="21sp"
+            android:textColor="@color/colorLabel"
+            android:background="@drawable/label_btn"/>
 
     </LinearLayout>
 

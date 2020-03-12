@@ -20,21 +20,7 @@ class WifiComponent : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_wifi_component, container, false)
-
-        val disinfectionId_types = mutableListOf<String>("01", "02")
-        val disinfectionId_spinner = view.disinfectionId_spinner as NiceSpinner
-        disinfectionId_spinner.setTextColor(Color.BLACK)
-        disinfectionId_spinner.attachDataSource(disinfectionId_types)
-
-        Log.i("disinfectionId", disinfectionId_spinner.text.toString())
-
-        val fragment = Fragment()
-        val bundle = Bundle()
-        bundle.putCharSequence("disinfectionId", disinfectionId_spinner.text)
-        fragment.arguments = bundle
-
-        Log.i("bundle", bundle.toString())
+        val view = inflater.inflate(R.layout.fragment_wifi_component, container, false)git
 
         view.btn_scan.setOnClickListener {
             val intent = Intent(activity, WifiActivity::class.java)

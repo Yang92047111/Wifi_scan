@@ -3,6 +3,7 @@ package com.takehara.tsutou.w_ifiscanner.Fragment
 import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -12,15 +13,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
 import com.takehara.tsutou.w_ifiscanner.R
+import kotlinx.android.synthetic.main.fragment_label_component.*
+import kotlinx.android.synthetic.main.fragment_label_component.view.*
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.angmarch.views.NiceSpinner
 import java.io.IOException
 import java.lang.Exception
 import java.security.SecureRandom
@@ -36,9 +42,7 @@ class PositionComponent : Fragment() {
 
     private val gson = Gson()
     private var taskHandler = Handler()
-
     private var wifiReceiverRegistered: Boolean = false
-
     private var wifidata: ArrayList<Data>? = ArrayList()
     private var beforewifidata: ArrayList<Data>? = ArrayList()
     private var jsonString: ArrayList<Data>? = ArrayList()
@@ -92,6 +96,32 @@ class PositionComponent : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
         view.classroom.setText(" ")
+        val car_spinnertype = mutableListOf<String>("01", "02", "03")
+        val  car_spinner = view. car_spinner as NiceSpinner
+        car_spinner.setTextColor(Color.BLACK)
+        car_spinner.attachDataSource(car_spinnertype)
+        var locate_status =0
+
+        view.locate_btn.setOnClickListener {
+            locate_status = locate_status +1
+            if(locate_status==1) {
+                locate_animate.playAnimation();
+                wifiManager.startScan()
+                wifiList()
+                UploadAPI()
+                taskHandler.postDelayed(runnable, 10000)
+                view.locate_btn.setText("停止定位")
+                view.locate_btn.setTextColor(Color.parseColor("#f44336"))
+            }
+            else if(locate_status==2)
+               {
+                    locate_animate.pauseAnimation();
+                    taskHandler.removeCallbacksAndMessages(null)
+                    view.locate_btn.setText("開始定位")
+                   locate_status = locate_status-2
+                   view.locate_btn.setTextColor(Color.parseColor("#437BFE"))
+                }
+        }
         return view
     }
 
@@ -118,7 +148,7 @@ class PositionComponent : Fragment() {
             jsonString?.let {
                 Upload(
                     timestamp = time,
-                    disinfectionId = "01",
+                    disinfectionId = car_spinner.text.toString(),
                     data = it
                 )
             }
@@ -239,10 +269,7 @@ class PositionComponent : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        wifiManager.startScan()
-        wifiList()
-        UploadAPI()
-        taskHandler.postDelayed(runnable,10000)
+
     }
 
     override fun onStop() {

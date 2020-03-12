@@ -13,7 +13,7 @@
     <string name="action_back">返回</string>
     <string name="action_scan_wifi">Wi-Fi Scan</string>
 
-    <string name="disinfectionId">消毒機：</string>
+    <string name="disinfectionId">消毒車：</string>
 
     <string name="prompt_loading">Loading&#8230;</string>
     <string name="prompt_settings_not_implemented">Settings not implemented</string>
@@ -33,6 +33,7 @@
     <string name="classroom">教室：</string>
     <string name="restart">再次標記</string>
     <string name="start">開始標記</string>
+    <string name="locate">開始定位</string>
     <string name="finish">確認標記</string>
 
     <!-- TODO: Remove or change this placeholder text -->
