@@ -11,25 +11,7 @@
         android:layout_height="92dp"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="85dp"
-            android:layout_height="29dp"
-            android:text="@string/disinfectionId"
-            android:textSize="21sp"
-            android:textColor="@color/colorLabel"/>
-
-        <org.angmarch.views.NiceSpinner
-            android:id="@+id/disinfectionId_spinner"
-            android:layout_width="300dp"
-            android:layout_height="54.38dp"
-            android:layout_gravity="center"
-            tools:layout_editor_absoluteX="162dp"
-            tools:layout_editor_absoluteY="231dp"
-            tools:ignore="MissingConstraints" />
-
-    </LinearLayout>
+        android:layout_marginTop="10dp"/>
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/label_wifi_scan_view"
