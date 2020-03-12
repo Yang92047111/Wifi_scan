@@ -27,6 +27,7 @@ import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.*
+import java.util.stream.Stream
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -215,10 +216,6 @@ open class LabelActivity : AppCompatActivity() {
                 ResponseSuccess(responseMessage.code)
             }
         })
-    }
-
-    private fun convertJson() {
-
     }
 
     private fun ResponseSuccess(code: Int) {
