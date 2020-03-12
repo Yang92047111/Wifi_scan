@@ -17,6 +17,7 @@
             android:layout_height="29dp"
             android:text="@string/car"
             android:textSize="21sp"
+            android:layout_marginLeft="55dp"
             android:textColor="@color/colorLabel"/>
 
         <org.angmarch.views.NiceSpinner
@@ -31,7 +32,7 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/locate_animate"
             android:layout_width="400dp"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:visibility="visible"
