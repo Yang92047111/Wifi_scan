@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_position_component.view.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.lang.Exception
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.*
@@ -72,12 +73,25 @@ class PositionComponent : Fragment() {
         val name: String = ""
     )
 
+    companion object {
+        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
+    }
+
+    private val wifiManager: WifiManager
+        get() =this.activity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+    private val wifiReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val results = wifiManager.scanResults as ArrayList<ScanResult>
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
-        view.classroom.setText("綜合科館109-2")
+        view.classroom.setText(" ")
         return view
     }
 
@@ -94,19 +108,6 @@ class PositionComponent : Fragment() {
         jsonString = APdata
         wifidata = jsonString
         Log.i("wifitest",jsonString.toString())
-    }
-
-    companion object {
-        private const val PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION = 120
-    }
-
-    private val wifiManager: WifiManager
-        get() =this.activity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
-
-    private val wifiReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val results = wifiManager.scanResults as ArrayList<ScanResult>
-        }
     }
 
     private fun UploadAPI() {
@@ -176,42 +177,51 @@ class PositionComponent : Fragment() {
 
         client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-
+                    UpgradeLocation("", "中斷連線")
                 }
                 @Throws(IOException::class)
                 override fun onResponse(call: Call, response: Response)  {
                     val locationJson = response.body
 
                     if (response.code == 200) {
-//                        val locationString = locationJson
                         Log.i("response", "locationString")
+
+                        if (response.body != null) {
+                            try {
+                                val locationData: ResponseData = gson.fromJson(locationJson!!.charStream(), ResponseData::class.java)
+                                Log.i("fomJson", locationData.toString())
+                                when (locationData.code) {
+                                    0 ->locationData.result?.location?.building?.let { UpgradeLocation(it,
+                                        locationData.result.location.name) }
+                                    1 ->UpgradeLocation("", "WiFi scan 錯誤")
+                                    2 ->UpgradeLocation("", "定位失敗")
+                                }
+                            }
+                            catch (e:Exception) {
+                                UpgradeLocation("", "定位失敗")
+                                Log.i("error code", e.toString())
+                            }
+                        }
+                        else
+                        {
+                            UpgradeLocation()
+                        }
                     }
                     else {
-                        Log.i("post", "failed")
+                        Log.i("server", "failed")
+                        UpgradeLocation("", "中斷連線")
                     }
-
-                    if (response.body != null) {
-                        val locationData: ResponseData = gson.fromJson(locationJson!!.charStream(), ResponseData::class.java)
-                        Log.i("fomJson", locationData.toString())
-
-                        Thread(Runnable {
-                            activity?.runOnUiThread(java.lang.Runnable {
-                                classroom.setText(locationData.result?.location?.building + locationData.result?.location?.name)
-                            })
-                        }).start()
-                    }
-                    else
-                    {
-                        Thread(Runnable {
-                            activity?.runOnUiThread(java.lang.Runnable {
-                                classroom.setText(" ")
-                            })
-                        }).start()
-                    }
-//                    val locationString = locationData.toString()
                 }
             }
         )
+    }
+
+    private fun UpgradeLocation (Build: String = "", Classroom: String = "") {
+        Thread(Runnable {
+            activity?.runOnUiThread(java.lang.Runnable {
+                classroom.setText(Build + Classroom)
+            })
+        }).start()
     }
 
     private var runnable = object:Runnable {

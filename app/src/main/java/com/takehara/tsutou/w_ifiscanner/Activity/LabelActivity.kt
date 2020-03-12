@@ -55,6 +55,11 @@ open class LabelActivity : AppCompatActivity() {
         @SerializedName("ssid") var ssid: String
     )
 
+    data class responseResult (
+        val code: Int = 0,
+        val message: String = ""
+    )
+
     private var jsonString: ArrayList<List<Data>>? = ArrayList()
 
     companion object {
@@ -205,20 +210,25 @@ open class LabelActivity : AppCompatActivity() {
             }
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                if (response.code == 200) {
-                    responseCode = response.code
-                }
-                ResponseSuccess()
+                responseCode = response.code
+                val responseMessage: responseResult = gson.fromJson(response.body?.charStream(), responseResult::class.java)
+                ResponseSuccess(responseMessage.code)
             }
         })
     }
 
-    private fun ResponseSuccess() {
+    private fun convertJson() {
+
+    }
+
+    private fun ResponseSuccess(code: Int) {
         Looper.prepare()
         if (responseCode == 200) {
-            Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
-            Log.i("success", responseCode.toString())
-        }else {
+            if (code == 0) {
+                Toast.makeText(this, R.string.finish_label, Toast.LENGTH_SHORT).show()
+                Log.i("success", responseCode.toString())
+            }
+        } else {
             Toast.makeText(this, R.string.failed_label, Toast.LENGTH_SHORT).show()
             Log.i("failed", responseCode.toString())
         }
