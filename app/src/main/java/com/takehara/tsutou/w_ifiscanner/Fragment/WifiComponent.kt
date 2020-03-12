@@ -20,7 +20,7 @@ class WifiComponent : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_wifi_component, container, false)git
+        val view = inflater.inflate(R.layout.fragment_wifi_component, container, false)
 
         view.btn_scan.setOnClickListener {
             val intent = Intent(activity, WifiActivity::class.java)
