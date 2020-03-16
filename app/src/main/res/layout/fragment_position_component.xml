@@ -37,7 +37,7 @@
             android:scaleType="centerCrop"
             android:visibility="visible"
             app:lottie_autoPlay="false"
-            app:lottie_fileName="location.json"
+            app:lottie_fileName="location3.json"
             app:lottie_loop="true"
             app:lottie_speed="1.5" />
 

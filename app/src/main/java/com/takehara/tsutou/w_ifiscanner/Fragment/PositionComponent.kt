@@ -211,6 +211,7 @@ class PositionComponent : Fragment() {
                 }
                 @Throws(IOException::class)
                 override fun onResponse(call: Call, response: Response)  {
+                    Log.i("server", "failed")
                     val locationJson = response.body
 
                     if (response.code == 200) {
@@ -234,7 +235,7 @@ class PositionComponent : Fragment() {
                         }
                         else
                         {
-                            UpgradeLocation()
+                            UpgradeLocation("", "")
                         }
                     }
                     else {
@@ -246,7 +247,7 @@ class PositionComponent : Fragment() {
         )
     }
 
-    private fun UpgradeLocation (Build: String = "", Classroom: String = "") {
+    private fun UpgradeLocation (Build: String = "", Classroom: String = "未定位") {
         Thread(Runnable {
             activity?.runOnUiThread(java.lang.Runnable {
                 classroom.setText(Build + Classroom)
@@ -265,11 +266,6 @@ class PositionComponent : Fragment() {
             }
             taskHandler.postDelayed(this,10000)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
     }
 
     override fun onStop() {
