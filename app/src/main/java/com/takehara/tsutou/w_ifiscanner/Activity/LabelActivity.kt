@@ -99,10 +99,7 @@ open class LabelActivity : AppCompatActivity() {
                 APdata.add(newData)
             }
         }
-        jsonString = arrayListOf(APdata)
-        if (scanAgain) {
-            jsonString!!.add(APdata)
-        }
+        jsonString!!.add(APdata)
         Log.i("Json", jsonString.toString())
     }
 
