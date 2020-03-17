@@ -47,6 +47,18 @@ class PositionComponent : Fragment() {
     private var beforewifidata: ArrayList<Data>? = ArrayList()
     private var jsonString: ArrayList<Data>? = ArrayList()
 
+    private var postData = ArrayList<Upload>()
+    private var tempData  =
+        jsonString?.let {
+            Upload(
+                timestamp = 1,
+                disinfectionId = "0",
+                data = it
+            )
+        }
+
+
+
     data class Upload (
         @SerializedName("timestamp") var timestamp: Int,
         @SerializedName("disinfectionId") var disinfectionId: String,
@@ -126,6 +138,7 @@ class PositionComponent : Fragment() {
     }
 
     private fun wifiList() {
+
         val APdata = ArrayList<Data>()
         val results = wifiManager.scanResults as ArrayList<ScanResult>
         for (result in results) {
@@ -141,7 +154,6 @@ class PositionComponent : Fragment() {
     }
 
     private fun UploadAPI() {
-        var postData = ArrayList<Upload>()
         val second=System.currentTimeMillis()/1000
         val time = second.toInt()
         val data =
@@ -152,10 +164,22 @@ class PositionComponent : Fragment() {
                     data = it
                 )
             }
-
-        if (data != null) {
+//        Log.i("data",data.toString())
+        if (data != null && tempData?.disinfectionId=="0" && data?.data.isNullOrEmpty()==false) {
             postData.add(data)
+            Log.i("que",postData.toString())
         }
+        else if (data != null && tempData!=null && data?.data.isNullOrEmpty()==false) {
+
+            Log.i("beforeque",postData.toString())
+
+            postData.add(data)
+            Log.i("afterque",postData.toString())
+        }
+        else if (data != null && data?.data.isNullOrEmpty()==true ){
+            Log.i("no wifi",postData.toString())
+        }
+
 
         val json = gson.toJson(postData)
         Log.i("json", json)
@@ -200,7 +224,9 @@ class PositionComponent : Fragment() {
 
         val formBody = json.toRequestBody()
         val request = Request.Builder()
-            .url("https://podm.chc.nctu.me/api/locate")
+//            .url("https://podm.chc.nctu.me/api/locate")
+            .url("https://140.124.73.63:3003/api/user/addtest")
+
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -208,14 +234,23 @@ class PositionComponent : Fragment() {
         client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     UpgradeLocation("", "中斷連線")
+                    tempData=data
                 }
                 @Throws(IOException::class)
                 override fun onResponse(call: Call, response: Response)  {
                     Log.i("server", "failed")
                     val locationJson = response.body
-
+                    postData.clear()
                     if (response.code == 200) {
                         Log.i("response", "locationString")
+                        tempData  =
+                            jsonString?.let {
+                                Upload(
+                                    timestamp = time,
+                                    disinfectionId = "0",
+                                    data = it
+                                )
+                            }
 
                         if (response.body != null) {
                             try {
@@ -241,6 +276,7 @@ class PositionComponent : Fragment() {
                     else {
                         Log.i("server", "failed")
                         UpgradeLocation("", "中斷連線")
+                        tempData=data
                     }
                 }
             }
