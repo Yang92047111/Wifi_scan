@@ -100,11 +100,11 @@ class PositionComponent : Fragment() {
         val  car_spinner = view. car_spinner as NiceSpinner
         car_spinner.setTextColor(Color.BLACK)
         car_spinner.attachDataSource(car_spinnertype)
-        var locate_status =0
+        var locate_status = 0
 
         view.locate_btn.setOnClickListener {
-            locate_status = locate_status +1
-            if(locate_status==1) {
+            locate_status = locate_status + 1
+            if(locate_status == 1) {
                 locate_animate.playAnimation();
                 wifiManager.startScan()
                 wifiList()
@@ -113,7 +113,7 @@ class PositionComponent : Fragment() {
                 view.locate_btn.setText("停止定位")
                 view.locate_btn.setTextColor(Color.parseColor("#f44336"))
             }
-            else if(locate_status==2)
+            else if(locate_status == 2)
                {
                     locate_animate.pauseAnimation();
                     taskHandler.removeCallbacksAndMessages(null)
