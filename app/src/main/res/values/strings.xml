@@ -26,9 +26,11 @@
 
     <string name="station_frequency">%1$s MHz</string>
     <string name="station_level">%1$s dBm</string>
-
+    recommend
+    <string name="recommend">建議清單</string>
     <string name="building">大樓：</string>
     <string name="car">消毒車：</string>
+    <string name="comfirm">確認送出</string>
     <string name="floor">樓層：</string>
     <string name="classroom">教室：</string>
     <string name="restart">再次標記</string>

@@ -19,11 +19,14 @@ import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.takehara.tsutou.w_ifiscanner.Activity.LabelActivity
+import com.takehara.tsutou.w_ifiscanner.Activity.RecommendActivity
+import com.takehara.tsutou.w_ifiscanner.Activity.WifiActivity
 import com.takehara.tsutou.w_ifiscanner.R
 import kotlinx.android.synthetic.main.fragment_label_component.*
 import kotlinx.android.synthetic.main.fragment_label_component.view.*
 import kotlinx.android.synthetic.main.fragment_position_component.*
 import kotlinx.android.synthetic.main.fragment_position_component.view.*
+import kotlinx.android.synthetic.main.fragment_wifi_component.view.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.angmarch.views.NiceSpinner
@@ -46,7 +49,7 @@ class PositionComponent : Fragment() {
     private var wifidata: ArrayList<Data>? = ArrayList()
     private var beforewifidata: ArrayList<Data>? = ArrayList()
     private var jsonString: ArrayList<Data>? = ArrayList()
-
+    private var color = 0
     private var postData = ArrayList<Upload>()
     private var tempData  =
         jsonString?.let {
@@ -108,26 +111,38 @@ class PositionComponent : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_position_component, container, false)
         view.classroom.setText(" ")
+
         val car_spinnertype = mutableListOf<String>("01", "02", "03")
         val  car_spinner = view. car_spinner as NiceSpinner
         car_spinner.setTextColor(Color.BLACK)
         car_spinner.attachDataSource(car_spinnertype)
         var locate_status =0
 
+
+
+        view.confirm.setOnClickListener {
+            UploadAPI()
+        }
+        view.recommend.setOnClickListener {
+            val intent = Intent(activity, RecommendActivity::class.java)
+            intent.putExtra("disinfectionId", car_spinner.text.toString())
+            startActivity(intent)
+        }
+
         view.locate_btn.setOnClickListener {
             locate_status = locate_status +1
             if(locate_status==1) {
-                locate_animate.playAnimation();
+                test.playAnimation()
                 wifiManager.startScan()
                 wifiList()
                 UploadAPI()
-                taskHandler.postDelayed(runnable, 10000)
+                taskHandler.postDelayed(runnable, 5000)
                 view.locate_btn.setText("停止定位")
                 view.locate_btn.setTextColor(Color.parseColor("#f44336"))
             }
             else if(locate_status==2)
                {
-                    locate_animate.pauseAnimation();
+                   test.pauseAnimation()
                     taskHandler.removeCallbacksAndMessages(null)
                     view.locate_btn.setText("開始定位")
                    locate_status = locate_status-2
@@ -226,7 +241,6 @@ class PositionComponent : Fragment() {
         val request = Request.Builder()
 //            .url("https://podm.chc.nctu.me/api/locate")
             .url("https://140.124.73.63:3003/api/user/addtest")
-
             .post(formBody)
             .addHeader("Content-Type","application/json")
             .build()
@@ -293,6 +307,17 @@ class PositionComponent : Fragment() {
 
     private var runnable = object:Runnable {
         override fun run() {
+            color = color + 1
+            if(color == 1){
+                classroom.setBackgroundColor(Color.parseColor("#9bd823"))
+            }
+            else if (color== 2)
+            {
+                classroom.setBackgroundColor(Color.parseColor("#5cc9ff"))
+                color=color-2
+            }
+
+            Log.i("i",color.toString())
             beforewifidata = wifidata
             wifiManager.startScan()
             wifiList()
@@ -300,7 +325,7 @@ class PositionComponent : Fragment() {
                 beforewifidata = wifidata
                 UploadAPI()
             }
-            taskHandler.postDelayed(this,10000)
+            taskHandler.postDelayed(this,5000)
         }
     }
 
@@ -333,7 +358,6 @@ class PositionComponent : Fragment() {
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
                 PERMISSION_REQUEST_CODE_ACCESS_COARSE_LOCATION
             )
-
             return false
         } else {
             return true
